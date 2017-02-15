@@ -1,4 +1,6 @@
 # orereplacer
+
+![ScreenShot](https://proxy.spigotmc.org/b9fb9f1b793e80a521a40818511411cd818690b6?url=http%3A%2F%2Fi.imgur.com%2FlcYt8Tm.png)
 xray's nightmare
 Ore Replacer
 https://github.com/kuohsuanlo/orereplacer
