@@ -1,7 +1,6 @@
 
 package io.github.kuohsuanlo.orereplacer;
 
-
 import java.io.File;
 import java.util.logging.Logger;
 import java.util.ArrayList;
@@ -18,18 +17,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
-class PlayerLastFishingLocation{
-	public String playername = "";
-	public Location last_fishhook_location;
-	public PlayerLastFishingLocation(String name, Location loc){
-		playername = name;
-		last_fishhook_location = loc;
-	}
-}
 public class OreReplacerPlugin extends JavaPlugin {
-    private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
     private final OreReplacerListener ORListener = new OreReplacerListener(this);
-    public ArrayList<PlayerLastFishingLocation> player_lf = new ArrayList<PlayerLastFishingLocation>();
     private static final Logger log = Logger.getLogger("Minecraft");
 
     public double PROBABILITY_DIAMOND = 0;
@@ -54,20 +43,8 @@ public class OreReplacerPlugin extends JavaPlugin {
     public boolean REPLACING=true;
 
     private FileConfiguration config;
-    @SuppressWarnings("deprecation")
- 	public boolean onCommand(CommandSender sender, Command command, String label, String[] split) {
-    	
-    	if (command.getName().equalsIgnoreCase("ortoggle")) {
-			if (split.length == 0) {
-				REPLACING = !REPLACING;
-				sender.sendMessage("[OreReplacer] : toggle "+REPLACING);
-				return true;
-			}
-                    
-                
-		}
-		return false;
-    }
+    private OreReplacerCommand CommandExecutor ;
+
     @Override
     public void onDisable() {
         // TODO: Place any custom disable code here
@@ -76,11 +53,55 @@ public class OreReplacerPlugin extends JavaPlugin {
         getLogger().info(String.format("[%s] Disabled Version %s", getDescription().getName(), getDescription().getVersion()));
     }
 
+    
+    public void onReload(){
+    	PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(ORListener, this);
+         
+        CommandExecutor = new OreReplacerCommand(this);
+        getCommand("orereplacer").setExecutor(CommandExecutor);
+
+         
+        this.reloadConfig();
+     	config = this.getConfig();
+     	
+     	PROBABILITY_DIAMOND = config.getDouble("PROBABILITY_DIAMOND");
+     	PROBABILITY_GOLD = config.getDouble("PROBABILITY_GOLD");
+     	PROBABILITY_IRON = config.getDouble("PROBABILITY_IRON");
+     	PROBABILITY_COAL = config.getDouble("PROBABILITY_COAL");
+     	PROBABILITY_LAPIS = config.getDouble("PROBABILITY_LAPIS");
+     	PROBABILITY_REDSTONE = config.getDouble("PROBABILITY_REDSTONE");
+     	PROBABILITY_EMERALD = config.getDouble("PROBABILITY_EMERALD");
+
+     	PROBABILITY_INCREASING_CONSTANT = config.getDouble("PROBABILITY_INCREASING_CONSTANT");
+     	
+     	REPLACING_DIAMOND = config.getBoolean("REPLACING_DIAMOND");
+     	REPLACING_GOLD = config.getBoolean("REPLACING_GOLD");
+     	REPLACING_IRON = config.getBoolean("REPLACING_IRON");
+     	REPLACING_COAL = config.getBoolean("REPLACING_COAL");
+     	REPLACING_LAPIS = config.getBoolean("REPLACING_LAPIS");
+     	REPLACING_REDSTONE = config.getBoolean("REPLACING_REDSTONE");
+     	REPLACINGY_EMERALD = config.getBoolean("REPLACINGY_EMERALD");
+     	    
+     	
+     	PROBABILITY_DIAMOND = PROBABILITY_DIAMOND*PROBABILITY_INCREASING_CONSTANT;
+     	PROBABILITY_GOLD = PROBABILITY_GOLD*PROBABILITY_INCREASING_CONSTANT;
+     	PROBABILITY_IRON = PROBABILITY_IRON*PROBABILITY_INCREASING_CONSTANT;
+     	PROBABILITY_COAL = PROBABILITY_COAL*PROBABILITY_INCREASING_CONSTANT;
+     	PROBABILITY_LAPIS = PROBABILITY_LAPIS*PROBABILITY_INCREASING_CONSTANT;
+     	PROBABILITY_REDSTONE = PROBABILITY_REDSTONE*PROBABILITY_INCREASING_CONSTANT;
+     	PROBABILITY_EMERALD = PROBABILITY_EMERALD*PROBABILITY_INCREASING_CONSTANT;
+     	
+     	
+    }
     @Override
     public void onEnable() {
     	
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(ORListener, this);
+
+        CommandExecutor = new OreReplacerCommand(this);
+        getCommand("orereplacer").setExecutor(CommandExecutor);
         
     	config = this.getConfig();
     	config.addDefault("version","1.0.0");

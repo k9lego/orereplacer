@@ -1,11 +1,14 @@
 name: OreReplacerPlugin
 main: io.github.kuohsuanlo.orereplacer.OreReplacerPlugin
-version: 1.0.0a
+version: 1.0.121a
 commands:
-  ortoggle:
+  orereplacer:
     description: .
     usage: 
 permissions:
     orereplacer.toggle:
         description: player with his node could toggle the plugin's replacing function.
+        default: op
+    orereplacer.reload:
+        description: player with his node could reload the plugin's config.
         default: op
