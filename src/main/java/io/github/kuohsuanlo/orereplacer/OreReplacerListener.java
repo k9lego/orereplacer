@@ -128,11 +128,12 @@ public class OreReplacerListener implements Listener {
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_DIAMOND){
     			stone.setType(Material.DIAMOND_ORE);
+    			return true;
     		}
-    		else{
+    		else if(!stone.getType().equals(Material.STONE)){
     			stone.setType(Material.STONE);
+    			return false;
     		}
-        	return true;
     	}
     	return false;
     }
@@ -142,11 +143,12 @@ public class OreReplacerListener implements Listener {
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_EMERALD){
     			stone.setType(Material.EMERALD_ORE);
+    			return true;
     		}
-    		else{
+    		else if(!stone.getType().equals(Material.STONE)){
     			stone.setType(Material.STONE);
+    			return false;
     		}
-        	return true;
     	}
     	return false;
     }
@@ -156,11 +158,12 @@ public class OreReplacerListener implements Listener {
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_LAPIS){
     			stone.setType(Material.LAPIS_ORE);
+    			return true;
     		}
-    		else{
+    		else if(!stone.getType().equals(Material.STONE)){
     			stone.setType(Material.STONE);
+    			return false;
     		}
-        	return true;
     	}
     	return false;
     }
@@ -170,11 +173,12 @@ public class OreReplacerListener implements Listener {
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_REDSTONE){
     			stone.setType(Material.REDSTONE_ORE);
+    			return true;
     		}
-    		else{
+    		else if(!stone.getType().equals(Material.STONE)){
     			stone.setType(Material.STONE);
+    			return false;
     		}
-        	return true;
     	}
     	return false;
     }
@@ -184,11 +188,12 @@ public class OreReplacerListener implements Listener {
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_GOLD){
     			stone.setType(Material.GOLD_ORE);
+    			return true;
     		}
-    		else{
+    		else if(!stone.getType().equals(Material.STONE)){
     			stone.setType(Material.STONE);
+    			return false;
     		}
-        	return true;
     	}
     	return false;
     }
@@ -198,11 +203,12 @@ public class OreReplacerListener implements Listener {
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_IRON){
     			stone.setType(Material.IRON_ORE);
+    			return true;
     		}
-    		else{
+    		else if(!stone.getType().equals(Material.STONE)){
     			stone.setType(Material.STONE);
+    			return false;
     		}
-        	return true;
     	}
     	return false;
     }
@@ -212,11 +218,12 @@ public class OreReplacerListener implements Listener {
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_COAL){
     			stone.setType(Material.COAL_ORE);
+    			return true;
     		}
-    		else{
+    		else if(!stone.getType().equals(Material.STONE)){
     			stone.setType(Material.STONE);
+    			return false;
     		}
-        	return true;
     	}
     	return false;
     }
