@@ -125,6 +125,7 @@ public class OreReplacerListener implements Listener {
     private boolean isDiamond(Block stone){
     	double max_y = 15;
     	double min_y = 0;
+    	if(!orplugin.REPLACING_DIAMOND) return false;
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_DIAMOND){
     			stone.setType(Material.DIAMOND_ORE);
@@ -140,6 +141,7 @@ public class OreReplacerListener implements Listener {
     private boolean isEmerald(Block stone){
     	double max_y = 15;
     	double min_y = 0;
+    	if(!orplugin.REPLACINGY_EMERALD) return false;
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_EMERALD){
     			stone.setType(Material.EMERALD_ORE);
@@ -155,6 +157,7 @@ public class OreReplacerListener implements Listener {
     private boolean isLapis(Block stone){
     	double max_y = 30;
     	double min_y = 0;
+    	if(!orplugin.REPLACING_LAPIS) return false;
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_LAPIS){
     			stone.setType(Material.LAPIS_ORE);
@@ -170,6 +173,7 @@ public class OreReplacerListener implements Listener {
     private boolean isRedStone(Block stone){
     	double max_y = 15;
     	double min_y = 0;
+    	if(!orplugin.REPLACING_REDSTONE) return false;
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_REDSTONE){
     			stone.setType(Material.REDSTONE_ORE);
@@ -185,6 +189,7 @@ public class OreReplacerListener implements Listener {
     private boolean isGold(Block stone){
     	double max_y = 30;
     	double min_y = 0;
+    	if(!orplugin.REPLACING_GOLD) return false;
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_GOLD){
     			stone.setType(Material.GOLD_ORE);
@@ -200,6 +205,7 @@ public class OreReplacerListener implements Listener {
     private boolean isIron(Block stone){
     	double max_y = 60;
     	double min_y = 0;
+    	if(!orplugin.REPLACING_IRON) return false;
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_IRON){
     			stone.setType(Material.IRON_ORE);
@@ -215,6 +221,7 @@ public class OreReplacerListener implements Listener {
     private boolean isCoal(Block stone){
     	double max_y = 70;
     	double min_y = 0;
+    	if(!orplugin.REPLACING_COAL) return false;
     	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
     		if(Math.random()<=orplugin.PROBABILITY_COAL){
     			stone.setType(Material.COAL_ORE);
