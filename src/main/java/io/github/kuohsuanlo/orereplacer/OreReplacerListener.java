@@ -15,6 +15,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockCanBuildEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -70,10 +72,43 @@ public class OreReplacerListener implements Listener {
     	return false;
     }
     @EventHandler
+    public void onBlockPistonExtendEvent(BlockPistonExtendEvent event) {
+    	if(event.getBlocks()==null) return;
+    	ArrayList<Block> blocks = new ArrayList<Block>();
+		blocks.addAll(event.getBlocks());
+		for(int i=0;i<blocks.size();i++){
+			Block block = blocks.get(i);
+			if(!isValidType(block)) return; 
+			if(!isValidWorld(block.getWorld())) return;
+			if( this.isValidLocation(block.getLocation()) ){
+				replaceFirstOre(block);
+			}
+		}
+		
+        //plugin.getLogger().info(event.getPlayer().getName() + " joined the server! :D");
+    }
+    @EventHandler
+    public void onBlockPistonRetractEvent(BlockPistonRetractEvent event) {
+    	if(event.getBlocks()==null) return;
+		ArrayList<Block> blocks = new ArrayList<Block>();
+		blocks.addAll(event.getBlocks());
+		for(int i=0;i<blocks.size();i++){
+			Block block = blocks.get(i);
+			if(!isValidType(block)) return; 
+			if(!isValidWorld(block.getWorld())) return;
+			if( this.isValidLocation(block.getLocation()) ){
+				replaceFirstOre(block);
+			}
+		}
+		
+        //plugin.getLogger().info(event.getPlayer().getName() + " joined the server! :D");
+    }
+    @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
 		Block block = event.getBlock();
+		if(!isValidType(block)) return; 
 		if(!isValidWorld(block.getWorld())) return;
-		if(this.isValidLocation(block.getLocation())  &&  isValidType(block)){
+		if( this.isValidLocation(block.getLocation()) ){
 			replaceFirstOre(block);
 		}
         //plugin.getLogger().info(event.getPlayer().getName() + " joined the server! :D");
@@ -81,8 +116,9 @@ public class OreReplacerListener implements Listener {
 	@EventHandler
     public void onBlockExplodeEvent(BlockExplodeEvent event) {
 		Block block = event.getBlock();
+		if(!isValidType(block)) return; 
 		if(!isValidWorld(block.getWorld())) return;
-		if(this.isValidLocation(block.getLocation())  &&  isValidType(block)){
+		if( this.isValidLocation(block.getLocation()) ){
 			replaceFirstOre(block);
 		}
         //plugin.getLogger().info(event.getPlayer().getName() + " joined the server! :D");
