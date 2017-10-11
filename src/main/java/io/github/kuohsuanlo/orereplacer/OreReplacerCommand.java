@@ -30,14 +30,35 @@ public class OreReplacerCommand implements CommandExecutor {
 
 
 					if(orplugin.REPLACING) 			arg0.sendMessage(ChatColor.RED+"[OreReplacer] : REPLACING           : "+orplugin.REPLACING);
-					if(orplugin.REPLACING_DIAMOND) 	arg0.sendMessage(ChatColor.RED+"[OreReplacer] : PROBABILITY_DIAMOND : "+orplugin.PROBABILITY_DIAMOND);
-					if(orplugin.REPLACING_GOLD) 	arg0.sendMessage(ChatColor.RED+"[OreReplacer] : PROBABILITY_GOLD    : "+orplugin.PROBABILITY_GOLD);
-					if(orplugin.REPLACING_IRON) 	arg0.sendMessage(ChatColor.RED+"[OreReplacer] : PROBABILITY_IRON    : "+orplugin.PROBABILITY_IRON);
-					if(orplugin.REPLACING_COAL) 	arg0.sendMessage(ChatColor.RED+"[OreReplacer] : PROBABILITY_COAL    : "+orplugin.PROBABILITY_COAL);
-					if(orplugin.REPLACING_LAPIS) 	arg0.sendMessage(ChatColor.RED+"[OreReplacer] : PROBABILITY_LAPIS   : "+orplugin.PROBABILITY_LAPIS);
-					if(orplugin.REPLACING_REDSTONE) arg0.sendMessage(ChatColor.RED+"[OreReplacer] : PROBABILITY_REDSTONE: "+orplugin.PROBABILITY_REDSTONE);
-					if(orplugin.REPLACINGY_EMERALD) arg0.sendMessage(ChatColor.RED+"[OreReplacer] : PROBABILITY_EMERALD : "+orplugin.PROBABILITY_EMERALD);
-													arg0.sendMessage(ChatColor.RED+"[OreReplacer] : INCREASING_CONSTANT : "+orplugin.PROBABILITY_INCREASING_CONSTANT);
+					if(orplugin.REPLACING_DIAMOND){
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : Prb[DIAMOND]  : "+orplugin.PROBABILITY_DIAMOND);
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : MAX_DIAMOND   : "+orplugin.MAX_DIAMOND);
+					}
+					if(orplugin.REPLACING_GOLD){
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : Prb[GOLD]     : "+orplugin.PROBABILITY_GOLD);
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : MAX_GOLD      : "+orplugin.MAX_GOLD);
+					}
+					if(orplugin.REPLACING_IRON){
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : Prb[IRON]     : "+orplugin.PROBABILITY_IRON);
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : MAX_IRON      : "+orplugin.MAX_IRON);
+					}
+					if(orplugin.REPLACING_COAL){
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : Prb[COAL]     : "+orplugin.PROBABILITY_COAL);
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : MAX_COAL      : "+orplugin.MAX_COAL);
+					}
+					if(orplugin.REPLACING_LAPIS){
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : Prb[LAPIS]    : "+orplugin.PROBABILITY_LAPIS);
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : MAX_LAPIS     : "+orplugin.MAX_LAPIS);
+					}
+					if(orplugin.REPLACING_REDSTONE){
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : Prb[REDSTONE] : "+orplugin.PROBABILITY_REDSTONE);
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : MAX_REDSTONE  : "+orplugin.MAX_REDSTONE);
+					}
+					if(orplugin.REPLACINGY_EMERALD){
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : Prb[EMERALD]  : "+orplugin.PROBABILITY_EMERALD);
+						arg0.sendMessage(ChatColor.RED+"[OreReplacer] : MAX_EMERALD   : "+orplugin.MAX_EMERALD);
+					}
+					arg0.sendMessage(ChatColor.RED+"[OreReplacer] : INCREASING_CONSTANT : "+orplugin.PROBABILITY_INCREASING_CONSTANT);
 			    	
 					arg0.sendMessage(ChatColor.RED+"[OreReplacer] : reloaded!");
 					return true;

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -22,12 +23,12 @@ public class OreReplacerPlugin extends JavaPlugin {
     private static final Logger log = Logger.getLogger("Minecraft");
 
     public int MAX_DIAMOND = 4;
-    public int MAX_GOLD = 5;
-    public int MAX_IRON = 6;
-    public int MAX_COAL = 6;
+    public int MAX_GOLD = 4;
+    public int MAX_IRON = 5;
+    public int MAX_COAL = 5;
     public int MAX_LAPIS = 4;
-    public int MAX_REDSTONE = 8;
-    public int MAX_EMERALD= 3;
+    public int MAX_REDSTONE = 6;
+    public int MAX_EMERALD= 2;
     
     public double PROBABILITY_DIAMOND = 0;
     public double PROBABILITY_GOLD = 0;
@@ -55,8 +56,8 @@ public class OreReplacerPlugin extends JavaPlugin {
 
 
     public ArrayList<Location> eventLocationList;
-    public static final int EventLocationListMax = 50;
-    
+    public static final int EventLocationListMax = 100;
+    public ArrayList<World> enabledWorld;
     
     @Override
     public void onDisable() {
@@ -93,15 +94,28 @@ public class OreReplacerPlugin extends JavaPlugin {
         
     	config = getConfig();
     	config.addDefault("version","1.0.0");
+    	
+
+    	config.addDefault("ENABLED_WORLD","world,world_nether,world_the_end");
+    	
     	config.addDefault("PROBABILITY_DIAMOND",0.001);
     	config.addDefault("PROBABILITY_GOLD",0.001);
     	config.addDefault("PROBABILITY_IRON",0.006);
-    	config.addDefault("PROBABILITY_COAL",0.010);
+    	config.addDefault("PROBABILITY_COAL",0.008);
     	config.addDefault("PROBABILITY_LAPIS",0.001);
     	config.addDefault("PROBABILITY_REDSTONE",0.008);
     	config.addDefault("PROBABILITY_EMERALD",0.001);
+    	
 
-    	config.addDefault("PROBABILITY_INCREASING_CONSTANT",3);
+    	config.addDefault("MAX_DIAMOND",4);
+    	config.addDefault("MAX_GOLD",4);
+    	config.addDefault("MAX_IRON",5);
+    	config.addDefault("MAX_COAL",5);
+    	config.addDefault("MAX_LAPIS",4);
+    	config.addDefault("MAX_REDSTONE",6);
+    	config.addDefault("MAX_EMERALD",2);
+
+    	config.addDefault("PROBABILITY_INCREASING_CONSTANT",1.1);
     	
     	config.addDefault("REPLACING_DIAMOND",true);
     	config.addDefault("REPLACINGY_EMERALD",true);
@@ -123,6 +137,14 @@ public class OreReplacerPlugin extends JavaPlugin {
         getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
     }
     private void loadConfig(){
+    	enabledWorld = new  ArrayList<World> ();
+    	String[] world_names = config.getString("ENABLED_WORLD").split(",");
+    	for(int i=0;i<world_names.length;i++){
+    		World world = this.getServer().getWorld(world_names[i]);
+    		if(world!=null)
+    			enabledWorld.add(world);
+    	}
+    	
     	PROBABILITY_DIAMOND = config.getDouble("PROBABILITY_DIAMOND");
      	PROBABILITY_GOLD = config.getDouble("PROBABILITY_GOLD");
      	PROBABILITY_IRON = config.getDouble("PROBABILITY_IRON");
@@ -131,6 +153,14 @@ public class OreReplacerPlugin extends JavaPlugin {
      	PROBABILITY_REDSTONE = config.getDouble("PROBABILITY_REDSTONE");
      	PROBABILITY_EMERALD = config.getDouble("PROBABILITY_EMERALD");
 
+     	MAX_DIAMOND = config.getInt("MAX_DIAMOND");
+     	MAX_GOLD = config.getInt("MAX_GOLD");
+     	MAX_IRON = config.getInt("MAX_IRON");
+     	MAX_COAL = config.getInt("MAX_COAL");
+     	MAX_LAPIS = config.getInt("MAX_LAPIS");
+     	MAX_REDSTONE = config.getInt("MAX_REDSTONE");
+     	MAX_EMERALD = config.getInt("MAX_EMERALD");
+     	
      	PROBABILITY_INCREASING_CONSTANT = config.getDouble("PROBABILITY_INCREASING_CONSTANT");
      	
      	REPLACING_DIAMOND = config.getBoolean("REPLACING_DIAMOND");
@@ -141,6 +171,7 @@ public class OreReplacerPlugin extends JavaPlugin {
      	REPLACING_REDSTONE = config.getBoolean("REPLACING_REDSTONE");
      	REPLACINGY_EMERALD = config.getBoolean("REPLACINGY_EMERALD");
      	    
+     	
      	
      	PROBABILITY_DIAMOND = PROBABILITY_DIAMOND*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_DIAMOND+1));
      	PROBABILITY_GOLD = PROBABILITY_GOLD*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_GOLD+1));

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ public class OreReplacerListener implements Listener {
 		orplugin = plugin;
 	}
 	public int currentIdx=0;
-    public boolean isValidLocation(Location location){
+	private boolean isValidLocation(Location location){
     	for(int i=0;i<orplugin.eventLocationList.size();i++){
     		if(orplugin.eventLocationList.get(i).getWorld().equals(location.getWorld())  &&
     				orplugin.eventLocationList.get(i).distance(location)<0.01){
@@ -62,9 +63,16 @@ public class OreReplacerListener implements Listener {
 
     	return false;
     }
+    private boolean isValidWorld(World world){
+    	for(int i=0;i<orplugin.enabledWorld.size();i++){
+    		if(world.equals(orplugin.enabledWorld.get(i))) return true;
+    	}
+    	return false;
+    }
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
 		Block block = event.getBlock();
+		if(!isValidWorld(block.getWorld())) return;
 		if(this.isValidLocation(block.getLocation())  &&  isValidType(block)){
 			replaceFirstOre(block);
 		}
@@ -73,6 +81,7 @@ public class OreReplacerListener implements Listener {
 	@EventHandler
     public void onBlockExplodeEvent(BlockExplodeEvent event) {
 		Block block = event.getBlock();
+		if(!isValidWorld(block.getWorld())) return;
 		if(this.isValidLocation(block.getLocation())  &&  isValidType(block)){
 			replaceFirstOre(block);
 		}
@@ -109,7 +118,7 @@ public class OreReplacerListener implements Listener {
 		return oreNumber;
 	}
 	private void replaceRemainedOre(Block oriBlock){
-		int oreNumber = this.getOreNumber(oriBlock.getType());
+		int oreNumber = this.getOreNumber(oriBlock.getType())-1;
 		Block block = oriBlock;
 		for(int i=0;i<oreNumber;i++){
 			
@@ -117,21 +126,36 @@ public class OreReplacerListener implements Listener {
 	    	double y = block.getLocation().getBlockY();
 	    	double z = block.getLocation().getBlockZ();
 			ArrayList<Block> blockList = new ArrayList<Block>();
-	    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+1,y,z)));
-	    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x-1,y,z)));
-	    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y+1,z)));
-	    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y-1,z)));
-	    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+1)));
-	    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
 	    	
+			
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+1,y,z)));
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x-1,y,z)));
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y+1,z)));
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y-1,z)));
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+1)));
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
+					
+			int[] randIdx = OreReplacerUtil.generateRandomPermutation();
+			
+			/*
+	    	 * All six nearby blocks should be marked as dirty. Otherwise the remaining ores would be removed,
+	    	 * as soon as the first block is break. (Because these is only happening when these nearby blocks have passed the oreExaming.)
+	    	 */
+			
+			// pick one of them as an ore block.
 	    	for(int j=0;j<blockList.size();j++){
-	    		if(isValidType(blockList.get(j))  &&  
-	    		   (!isNextToAir(blockList.get(j)))  &&
-	    		   isValidLocation(blockList.get(j).getLocation())){
+	    		if(isValidType(blockList.get(randIdx[j]))  &&  !isNextToAir(blockList.get(randIdx[j])) ){
+	    			blockList.get(randIdx[j]).setType(oriBlock.getType());
+	    			block = blockList.get(randIdx[j]);
 	    			
-	    			blockList.get(j).setType(oriBlock.getType());
+	    			//all nearby blocks marked as dirty
+	    			isValidLocation(block.getLocation().add(1,0,0));
+	    			isValidLocation(block.getLocation().add(-1,0,0));
+	    			isValidLocation(block.getLocation().add(0,1,0));
+	    			isValidLocation(block.getLocation().add(0,-1,0));
+	    			isValidLocation(block.getLocation().add(0,0,1));
+	    			isValidLocation(block.getLocation().add(0,0,-1));
 	    			
-	    			block = blockList.get(j);
 	    			break;
 	    		}
 	    	}
@@ -149,32 +173,38 @@ public class OreReplacerListener implements Listener {
     	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+1)));
     	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
     	
+    	/*
+    	 * All six nearby blocks should be marked as dirty. Otherwise the remaining ores would be removed,
+    	 * as soon as the first block is break.  (only if it's an ore block)
+    	 */
     	for(int i=0;i<blockList.size();i++){
-    		if(isValidType(blockList.get(i))  &&  
-    		  (!isNextToAir(blockList.get(i)))  &&
-    		  isValidLocation(blockList.get(i).getLocation())){
-    			
-
+    		if(isValidType(blockList.get(i))  &&  !isNextToAir(blockList.get(i)) ){  
+    			boolean isReplacedByOre = false;
 				if(isDiamond(blockList.get(i))){
-					replaceRemainedOre(blockList.get(i));
+					isReplacedByOre = true;
 				}
 				else if(isEmerald(blockList.get(i))){
-					replaceRemainedOre(blockList.get(i));
+					isReplacedByOre = true;
 				}
 				else if(isLapis(blockList.get(i))){
-					replaceRemainedOre(blockList.get(i));
+					isReplacedByOre = true;
 				}
 				else if(isGold(blockList.get(i))){
-					replaceRemainedOre(blockList.get(i));
+					isReplacedByOre = true;
 				}
 				else if(isRedStone(blockList.get(i))){
-					replaceRemainedOre(blockList.get(i));
+					isReplacedByOre = true;
 				}
 				else if(isIron(blockList.get(i))){
-					replaceRemainedOre(blockList.get(i));
+					isReplacedByOre = true;
 				}
 				else if(isCoal(blockList.get(i))){
-					replaceRemainedOre(blockList.get(i));
+					isReplacedByOre = true;
+				}
+				
+				if(isReplacedByOre){
+					if(isValidLocation(blockList.get(i).getLocation()))
+						replaceRemainedOre(blockList.get(i));
 				}
 			}
     	}
