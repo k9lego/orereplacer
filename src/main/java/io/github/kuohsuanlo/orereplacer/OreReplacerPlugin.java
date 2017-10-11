@@ -99,12 +99,12 @@ public class OreReplacerPlugin extends JavaPlugin {
     	config.addDefault("ENABLED_WORLD","world,world_nether,world_the_end");
     	
     	config.addDefault("PROBABILITY_DIAMOND",0.001);
-    	config.addDefault("PROBABILITY_GOLD",0.001);
+    	config.addDefault("PROBABILITY_GOLD",0.0012);
     	config.addDefault("PROBABILITY_IRON",0.006);
     	config.addDefault("PROBABILITY_COAL",0.008);
-    	config.addDefault("PROBABILITY_LAPIS",0.001);
+    	config.addDefault("PROBABILITY_LAPIS",0.0012);
     	config.addDefault("PROBABILITY_REDSTONE",0.008);
-    	config.addDefault("PROBABILITY_EMERALD",0.001);
+    	config.addDefault("PROBABILITY_EMERALD",0.0008);
     	
 
     	config.addDefault("MAX_DIAMOND",4);
@@ -115,14 +115,14 @@ public class OreReplacerPlugin extends JavaPlugin {
     	config.addDefault("MAX_REDSTONE",6);
     	config.addDefault("MAX_EMERALD",2);
 
-    	config.addDefault("PROBABILITY_INCREASING_CONSTANT",1.1);
+    	config.addDefault("PROBABILITY_INCREASING_CONSTANT",1.0);
     	
     	config.addDefault("REPLACING_DIAMOND",true);
     	config.addDefault("REPLACINGY_EMERALD",true);
-    	config.addDefault("REPLACING_GOLD",false);
+    	config.addDefault("REPLACING_GOLD",true);
     	config.addDefault("REPLACING_IRON",false);
     	config.addDefault("REPLACING_COAL",false);
-    	config.addDefault("REPLACING_LAPIS",false);
+    	config.addDefault("REPLACING_LAPIS",true);
     	config.addDefault("REPLACING_REDSTONE",false);
     	
     	config.options().copyDefaults(true);
