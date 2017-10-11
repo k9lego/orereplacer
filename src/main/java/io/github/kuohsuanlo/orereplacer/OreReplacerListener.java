@@ -24,7 +24,6 @@ public class OreReplacerListener implements Listener {
 	public OreReplacerListener(OreReplacerPlugin plugin){
 		orplugin = plugin;
 	}
-	
 	public int currentIdx=0;
     public boolean isValidLocation(Location location){
     	for(int i=0;i<orplugin.eventLocationList.size();i++){
@@ -33,6 +32,8 @@ public class OreReplacerListener implements Listener {
     			return false;
     		}
     	}
+    	
+    	
     	if(orplugin.eventLocationList.size()<OreReplacerPlugin.EventLocationListMax){
 			orplugin.eventLocationList.add(location);
 			return true;
@@ -44,67 +45,7 @@ public class OreReplacerListener implements Listener {
 			return true;
 		}
     }
-	@EventHandler
-    public void onBlockBreakEvent(BlockBreakEvent event) {
-		Block block = event.getBlock();
-		if(!this.isValidLocation(block.getLocation())) return ;
-		if(shouldBeReplace(block)){
-			replaceOre(block);
-		}
-        //plugin.getLogger().info(event.getPlayer().getName() + " joined the server! :D");
-    }
-	@EventHandler
-    public void onBlockExplodeEvent(BlockExplodeEvent event) {
-		Block block = event.getBlock();
-		if(!this.isValidLocation(block.getLocation())) return ;
-		if(shouldBeReplace(block)){
-			replaceOre(block);
-		}
-        //plugin.getLogger().info(event.getPlayer().getName() + " joined the server! :D");
-    }
-    private void replaceOre(Block block){
-    	double x = block.getLocation().getBlockX();
-    	double y = block.getLocation().getBlockY();
-    	double z = block.getLocation().getBlockZ();
-    	ArrayList<Block> blockList = new ArrayList<Block>();
-    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+1,y,z)));
-    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x-1,y,z)));
-    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y+1,z)));
-    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y-1,z)));
-    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+1)));
-    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
-    	
-    	for(int i=0;i<blockList.size();i++){
-    		if(shouldBeReplace(blockList.get(i))){
-    			if(!nextToAir(blockList.get(i))){
-
-    				if(isDiamond(blockList.get(i))){
-    					
-    				}
-    				else if(isEmerald(blockList.get(i))){
-    					
-    				}
-    				else if(isLapis(blockList.get(i))){
-    					
-    				}
-    				else if(isGold(blockList.get(i))){
-    					
-    				}
-    				else if(isRedStone(blockList.get(i))){
-    					
-    				}
-    				else if(isIron(blockList.get(i))){
-    					
-    				}
-    				else if(isCoal(blockList.get(i))){
-    					
-    				}
-    			}
-
-    		}
-    	}
-    }
-    private boolean shouldBeReplace(Block block){
+    private boolean isValidType(Block block){
     	if(orplugin.REPLACING == true){
         	if( block.getType().equals(Material.STONE)  ||  
         			block.getType().equals(Material.DIAMOND_ORE) && orplugin.REPLACING_DIAMOND ||   
@@ -121,7 +62,125 @@ public class OreReplacerListener implements Listener {
 
     	return false;
     }
-    private boolean nextToAir(Block block){
+    @EventHandler
+    public void onBlockBreakEvent(BlockBreakEvent event) {
+		Block block = event.getBlock();
+		if(this.isValidLocation(block.getLocation())  &&  isValidType(block)){
+			replaceFirstOre(block);
+		}
+        //plugin.getLogger().info(event.getPlayer().getName() + " joined the server! :D");
+    }
+	@EventHandler
+    public void onBlockExplodeEvent(BlockExplodeEvent event) {
+		Block block = event.getBlock();
+		if(this.isValidLocation(block.getLocation())  &&  isValidType(block)){
+			replaceFirstOre(block);
+		}
+        //plugin.getLogger().info(event.getPlayer().getName() + " joined the server! :D");
+    }
+    
+	private int getOreNumber(Material m){
+		int maxNumber =1;
+		if(m.equals(Material.DIAMOND_ORE)){
+			maxNumber= orplugin.MAX_DIAMOND;
+		}
+		if(m.equals(Material.EMERALD_ORE)){
+			maxNumber= orplugin.MAX_EMERALD;
+		}
+		if(m.equals(Material.LAPIS_ORE)){
+			maxNumber=orplugin.MAX_LAPIS;
+		}
+		if(m.equals(Material.REDSTONE_ORE)){
+			maxNumber= orplugin.MAX_REDSTONE;
+		}
+		if(m.equals(Material.GOLD_ORE)){
+			maxNumber= orplugin.MAX_GOLD;
+		}
+		if(m.equals(Material.IRON_ORE)){
+			maxNumber= orplugin.MAX_IRON;
+		}
+		if(m.equals(Material.COAL_ORE)){
+			maxNumber= orplugin.MAX_COAL;
+		}
+		
+		int oreNumber = (int) Math.round(Math.random()*maxNumber);
+		if(oreNumber==0) oreNumber=1; 
+		
+		return oreNumber;
+	}
+	private void replaceRemainedOre(Block oriBlock){
+		int oreNumber = this.getOreNumber(oriBlock.getType());
+		Block block = oriBlock;
+		for(int i=0;i<oreNumber;i++){
+			
+			double x = block.getLocation().getBlockX();
+	    	double y = block.getLocation().getBlockY();
+	    	double z = block.getLocation().getBlockZ();
+			ArrayList<Block> blockList = new ArrayList<Block>();
+	    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+1,y,z)));
+	    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x-1,y,z)));
+	    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y+1,z)));
+	    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y-1,z)));
+	    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+1)));
+	    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
+	    	
+	    	for(int j=0;j<blockList.size();j++){
+	    		if(isValidType(blockList.get(j))  &&  
+	    		   (!isNextToAir(blockList.get(j)))  &&
+	    		   isValidLocation(blockList.get(j).getLocation())){
+	    			
+	    			blockList.get(j).setType(oriBlock.getType());
+	    			
+	    			block = blockList.get(j);
+	    			break;
+	    		}
+	    	}
+		}
+	}
+	private void replaceFirstOre(Block block){
+    	double x = block.getLocation().getBlockX();
+    	double y = block.getLocation().getBlockY();
+    	double z = block.getLocation().getBlockZ();
+    	ArrayList<Block> blockList = new ArrayList<Block>();
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+1,y,z)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x-1,y,z)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y+1,z)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y-1,z)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+1)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
+    	
+    	for(int i=0;i<blockList.size();i++){
+    		if(isValidType(blockList.get(i))  &&  
+    		  (!isNextToAir(blockList.get(i)))  &&
+    		  isValidLocation(blockList.get(i).getLocation())){
+    			
+
+				if(isDiamond(blockList.get(i))){
+					replaceRemainedOre(blockList.get(i));
+				}
+				else if(isEmerald(blockList.get(i))){
+					replaceRemainedOre(blockList.get(i));
+				}
+				else if(isLapis(blockList.get(i))){
+					replaceRemainedOre(blockList.get(i));
+				}
+				else if(isGold(blockList.get(i))){
+					replaceRemainedOre(blockList.get(i));
+				}
+				else if(isRedStone(blockList.get(i))){
+					replaceRemainedOre(blockList.get(i));
+				}
+				else if(isIron(blockList.get(i))){
+					replaceRemainedOre(blockList.get(i));
+				}
+				else if(isCoal(blockList.get(i))){
+					replaceRemainedOre(blockList.get(i));
+				}
+			}
+    	}
+    }
+
+    private boolean isNextToAir(Block block){
     	double x = block.getLocation().getBlockX();
     	double y = block.getLocation().getBlockY();
     	double z = block.getLocation().getBlockZ();

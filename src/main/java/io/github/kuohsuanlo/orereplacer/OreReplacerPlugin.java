@@ -21,6 +21,14 @@ public class OreReplacerPlugin extends JavaPlugin {
     private final OreReplacerListener ORListener = new OreReplacerListener(this);
     private static final Logger log = Logger.getLogger("Minecraft");
 
+    public int MAX_DIAMOND = 4;
+    public int MAX_GOLD = 5;
+    public int MAX_IRON = 6;
+    public int MAX_COAL = 6;
+    public int MAX_LAPIS = 4;
+    public int MAX_REDSTONE = 8;
+    public int MAX_EMERALD= 3;
+    
     public double PROBABILITY_DIAMOND = 0;
     public double PROBABILITY_GOLD = 0;
     public double PROBABILITY_IRON = 0;
@@ -57,8 +65,6 @@ public class OreReplacerPlugin extends JavaPlugin {
         // EXAMPLE: Custom code, here we just output some info so we can check all is well
         getLogger().info(String.format("[%s] Disabled Version %s", getDescription().getName(), getDescription().getVersion()));
     }
-
-    
     public void onReload(){
     	PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(ORListener, this);
@@ -67,35 +73,11 @@ public class OreReplacerPlugin extends JavaPlugin {
         getCommand("orereplacer").setExecutor(CommandExecutor);
 
          
-        this.reloadConfig();
-     	config = this.getConfig();
+        reloadConfig();
+     	config = getConfig();
      	
-     	PROBABILITY_DIAMOND = config.getDouble("PROBABILITY_DIAMOND");
-     	PROBABILITY_GOLD = config.getDouble("PROBABILITY_GOLD");
-     	PROBABILITY_IRON = config.getDouble("PROBABILITY_IRON");
-     	PROBABILITY_COAL = config.getDouble("PROBABILITY_COAL");
-     	PROBABILITY_LAPIS = config.getDouble("PROBABILITY_LAPIS");
-     	PROBABILITY_REDSTONE = config.getDouble("PROBABILITY_REDSTONE");
-     	PROBABILITY_EMERALD = config.getDouble("PROBABILITY_EMERALD");
-
-     	PROBABILITY_INCREASING_CONSTANT = config.getDouble("PROBABILITY_INCREASING_CONSTANT");
+     	loadConfig();
      	
-     	REPLACING_DIAMOND = config.getBoolean("REPLACING_DIAMOND");
-     	REPLACING_GOLD = config.getBoolean("REPLACING_GOLD");
-     	REPLACING_IRON = config.getBoolean("REPLACING_IRON");
-     	REPLACING_COAL = config.getBoolean("REPLACING_COAL");
-     	REPLACING_LAPIS = config.getBoolean("REPLACING_LAPIS");
-     	REPLACING_REDSTONE = config.getBoolean("REPLACING_REDSTONE");
-     	REPLACINGY_EMERALD = config.getBoolean("REPLACINGY_EMERALD");
-     	    
-     	
-     	PROBABILITY_DIAMOND = PROBABILITY_DIAMOND*PROBABILITY_INCREASING_CONSTANT;
-     	PROBABILITY_GOLD = PROBABILITY_GOLD*PROBABILITY_INCREASING_CONSTANT;
-     	PROBABILITY_IRON = PROBABILITY_IRON*PROBABILITY_INCREASING_CONSTANT;
-     	PROBABILITY_COAL = PROBABILITY_COAL*PROBABILITY_INCREASING_CONSTANT;
-     	PROBABILITY_LAPIS = PROBABILITY_LAPIS*PROBABILITY_INCREASING_CONSTANT;
-     	PROBABILITY_REDSTONE = PROBABILITY_REDSTONE*PROBABILITY_INCREASING_CONSTANT;
-     	PROBABILITY_EMERALD = PROBABILITY_EMERALD*PROBABILITY_INCREASING_CONSTANT;
      	
      	
     }
@@ -109,7 +91,7 @@ public class OreReplacerPlugin extends JavaPlugin {
         
         this.eventLocationList = new ArrayList<Location>();
         
-    	config = this.getConfig();
+    	config = getConfig();
     	config.addDefault("version","1.0.0");
     	config.addDefault("PROBABILITY_DIAMOND",0.001);
     	config.addDefault("PROBABILITY_GOLD",0.001);
@@ -129,49 +111,46 @@ public class OreReplacerPlugin extends JavaPlugin {
     	config.addDefault("REPLACING_LAPIS",false);
     	config.addDefault("REPLACING_REDSTONE",false);
     	
-    	
-    	
-    	
-    	
-    	
-    	
-    	    
-    	
     	config.options().copyDefaults(true);
     	saveConfig();
     	
-    	PROBABILITY_DIAMOND = config.getDouble("PROBABILITY_DIAMOND");
-    	PROBABILITY_GOLD = config.getDouble("PROBABILITY_GOLD");
-    	PROBABILITY_IRON = config.getDouble("PROBABILITY_IRON");
-    	PROBABILITY_COAL = config.getDouble("PROBABILITY_COAL");
-    	PROBABILITY_LAPIS = config.getDouble("PROBABILITY_LAPIS");
-    	PROBABILITY_REDSTONE = config.getDouble("PROBABILITY_REDSTONE");
-    	PROBABILITY_EMERALD = config.getDouble("PROBABILITY_EMERALD");
-
-    	PROBABILITY_INCREASING_CONSTANT = config.getDouble("PROBABILITY_INCREASING_CONSTANT");
     	
-    	REPLACING_DIAMOND = config.getBoolean("REPLACING_DIAMOND");
-    	REPLACING_GOLD = config.getBoolean("REPLACING_GOLD");
-    	REPLACING_IRON = config.getBoolean("REPLACING_IRON");
-    	REPLACING_COAL = config.getBoolean("REPLACING_COAL");
-    	REPLACING_LAPIS = config.getBoolean("REPLACING_LAPIS");
-    	REPLACING_REDSTONE = config.getBoolean("REPLACING_REDSTONE");
-    	REPLACINGY_EMERALD = config.getBoolean("REPLACINGY_EMERALD");
-    	    
-    	
-    	PROBABILITY_DIAMOND = PROBABILITY_DIAMOND*PROBABILITY_INCREASING_CONSTANT;
-    	PROBABILITY_GOLD = PROBABILITY_GOLD*PROBABILITY_INCREASING_CONSTANT;
-    	PROBABILITY_IRON = PROBABILITY_IRON*PROBABILITY_INCREASING_CONSTANT;
-    	PROBABILITY_COAL = PROBABILITY_COAL*PROBABILITY_INCREASING_CONSTANT;
-    	PROBABILITY_LAPIS = PROBABILITY_LAPIS*PROBABILITY_INCREASING_CONSTANT;
-    	PROBABILITY_REDSTONE = PROBABILITY_REDSTONE*PROBABILITY_INCREASING_CONSTANT;
-    	PROBABILITY_EMERALD = PROBABILITY_EMERALD*PROBABILITY_INCREASING_CONSTANT;
+    	loadConfig();
     	
     	
     	
         PluginDescriptionFile pdfFile = this.getDescription();
         getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
     }
+    private void loadConfig(){
+    	PROBABILITY_DIAMOND = config.getDouble("PROBABILITY_DIAMOND");
+     	PROBABILITY_GOLD = config.getDouble("PROBABILITY_GOLD");
+     	PROBABILITY_IRON = config.getDouble("PROBABILITY_IRON");
+     	PROBABILITY_COAL = config.getDouble("PROBABILITY_COAL");
+     	PROBABILITY_LAPIS = config.getDouble("PROBABILITY_LAPIS");
+     	PROBABILITY_REDSTONE = config.getDouble("PROBABILITY_REDSTONE");
+     	PROBABILITY_EMERALD = config.getDouble("PROBABILITY_EMERALD");
 
+     	PROBABILITY_INCREASING_CONSTANT = config.getDouble("PROBABILITY_INCREASING_CONSTANT");
+     	
+     	REPLACING_DIAMOND = config.getBoolean("REPLACING_DIAMOND");
+     	REPLACING_GOLD = config.getBoolean("REPLACING_GOLD");
+     	REPLACING_IRON = config.getBoolean("REPLACING_IRON");
+     	REPLACING_COAL = config.getBoolean("REPLACING_COAL");
+     	REPLACING_LAPIS = config.getBoolean("REPLACING_LAPIS");
+     	REPLACING_REDSTONE = config.getBoolean("REPLACING_REDSTONE");
+     	REPLACINGY_EMERALD = config.getBoolean("REPLACINGY_EMERALD");
+     	    
+     	
+     	PROBABILITY_DIAMOND = PROBABILITY_DIAMOND*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_DIAMOND+1));
+     	PROBABILITY_GOLD = PROBABILITY_GOLD*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_GOLD+1));
+     	PROBABILITY_IRON = PROBABILITY_IRON*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_IRON+1));
+     	PROBABILITY_COAL = PROBABILITY_COAL*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_COAL+1));
+     	PROBABILITY_LAPIS = PROBABILITY_LAPIS*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_LAPIS+1));
+     	PROBABILITY_REDSTONE = PROBABILITY_REDSTONE*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_REDSTONE+1));
+     	PROBABILITY_EMERALD = PROBABILITY_EMERALD*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_EMERALD+1));
+     	
+     	
+    }
 
 }
