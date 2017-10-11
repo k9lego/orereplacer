@@ -24,9 +24,29 @@ public class OreReplacerListener implements Listener {
 	public OreReplacerListener(OreReplacerPlugin plugin){
 		orplugin = plugin;
 	}
+	
+	public int currentIdx=0;
+    public boolean isValidLocation(Location location){
+    	for(int i=0;i<orplugin.eventLocationList.size();i++){
+    		if(orplugin.eventLocationList.get(i).distance(location)<0.01){
+    			return false;
+    		}
+    	}
+    	if(orplugin.eventLocationList.size()<OreReplacerPlugin.EventLocationListMax){
+			orplugin.eventLocationList.add(location);
+			return true;
+		}
+		else{
+			orplugin.eventLocationList.set(currentIdx, location);
+			currentIdx++;
+			currentIdx%=OreReplacerPlugin.EventLocationListMax;
+			return true;
+		}
+    }
 	@EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
 		Block block = event.getBlock();
+		if(!this.isValidLocation(block.getLocation())) return ;
 		if(shouldBeReplace(block)){
 			replaceOre(block);
 		}
@@ -35,6 +55,7 @@ public class OreReplacerListener implements Listener {
 	@EventHandler
     public void onBlockExplodeEvent(BlockExplodeEvent event) {
 		Block block = event.getBlock();
+		if(!this.isValidLocation(block.getLocation())) return ;
 		if(shouldBeReplace(block)){
 			replaceOre(block);
 		}

@@ -45,6 +45,11 @@ public class OreReplacerPlugin extends JavaPlugin {
     private FileConfiguration config;
     private OreReplacerCommand CommandExecutor ;
 
+
+    public ArrayList<Location> eventLocationList;
+    public static final int EventLocationListMax = 50;
+    
+    
     @Override
     public void onDisable() {
         // TODO: Place any custom disable code here
@@ -99,9 +104,10 @@ public class OreReplacerPlugin extends JavaPlugin {
     	
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(ORListener, this);
-
         CommandExecutor = new OreReplacerCommand(this);
         getCommand("orereplacer").setExecutor(CommandExecutor);
+        
+        this.eventLocationList = new ArrayList<Location>();
         
     	config = this.getConfig();
     	config.addDefault("version","1.0.0");
