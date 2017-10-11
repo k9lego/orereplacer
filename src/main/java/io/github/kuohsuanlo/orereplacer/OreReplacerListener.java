@@ -28,7 +28,8 @@ public class OreReplacerListener implements Listener {
 	public int currentIdx=0;
     public boolean isValidLocation(Location location){
     	for(int i=0;i<orplugin.eventLocationList.size();i++){
-    		if(orplugin.eventLocationList.get(i).distance(location)<0.01){
+    		if(orplugin.eventLocationList.get(i).getWorld().equals(location.getWorld())  &&
+    				orplugin.eventLocationList.get(i).distance(location)<0.01){
     			return false;
     		}
     	}
