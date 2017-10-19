@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockCanBuildEvent;
+import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
@@ -27,31 +28,62 @@ public class OreReplacerListener implements Listener {
 	public OreReplacerListener(OreReplacerPlugin plugin){
 		orplugin = plugin;
 	}
-	public int currentIdx=0;
-	private boolean isValidLocation(Location location){
-    	for(int i=0;i<orplugin.eventLocationList.size();i++){
-    		if(orplugin.eventLocationList.get(i).getWorld().equals(location.getWorld())  &&
-    				orplugin.eventLocationList.get(i).distance(location)<0.01){
+	
+	public int currentIdxDamage=0;
+	private boolean isValidLocationDamaged(Location location){
+    	for(int i=0;i<orplugin.eventLocationListDamaged.size();i++){
+    		if(orplugin.eventLocationListDamaged.get(i).getWorld().equals(location.getWorld())  &&
+    				orplugin.eventLocationListDamaged.get(i).distance(location)<0.01){
     			return false;
     		}
     	}
     	
     	
-    	if(orplugin.eventLocationList.size()<OreReplacerPlugin.EventLocationListMax){
-			orplugin.eventLocationList.add(location);
+    	if(orplugin.eventLocationListDamaged.size()<OreReplacerPlugin.EventLocationListMaxDamaged){
+			orplugin.eventLocationListDamaged.add(location);
 			return true;
 		}
 		else{
-			orplugin.eventLocationList.set(currentIdx, location);
+			orplugin.eventLocationListDamaged.set(currentIdxDamage, location);
+			currentIdxDamage++;
+			currentIdxDamage%=OreReplacerPlugin.EventLocationListMaxDamaged;
+			return true;
+		}
+    }
+	
+	public int currentIdx=0;
+	private boolean isValidLocation(Location location){
+    	for(int i=0;i<orplugin.eventLocationListMining.size();i++){
+    		if(orplugin.eventLocationListMining.get(i).getWorld().equals(location.getWorld())  &&
+    				orplugin.eventLocationListMining.get(i).distance(location)<0.01){
+    			return false;
+    		}
+    	}
+    	
+    	
+    	if(orplugin.eventLocationListMining.size()<OreReplacerPlugin.EventLocationListMaxMining){
+			orplugin.eventLocationListMining.add(location);
+			return true;
+		}
+		else{
+			orplugin.eventLocationListMining.set(currentIdx, location);
 			currentIdx++;
-			currentIdx%=OreReplacerPlugin.EventLocationListMax;
+			currentIdx%=OreReplacerPlugin.EventLocationListMaxMining;
 			return true;
 		}
     }
     private boolean isValidType(Block block){
     	if(orplugin.REPLACING == true){
-        	if( block.getType().equals(Material.STONE)  ||  
-        			block.getType().equals(Material.DIAMOND_ORE) && orplugin.REPLACING_DIAMOND ||   
+        	if( block.getType().equals(Material.STONE)  ||  isOre(block)){
+            		return true;
+            	}
+    	}
+
+    	return false;
+    }
+    private boolean isOre(Block block){
+    	if(orplugin.REPLACING == true){
+        	if( block.getType().equals(Material.DIAMOND_ORE) && orplugin.REPLACING_DIAMOND ||   
         			block.getType().equals(Material.EMERALD_ORE) && orplugin.REPLACINGY_EMERALD  ||   
         			block.getType().equals(Material.LAPIS_ORE) && orplugin.REPLACING_LAPIS  ||    
         			block.getType().equals(Material.REDSTONE_ORE) && orplugin.REPLACING_REDSTONE  ||    
@@ -71,6 +103,46 @@ public class OreReplacerListener implements Listener {
     	}
     	return false;
     }
+    
+    /*
+     * Hiding next revealing blocks, avoiding making player seeing their ores got replaced. 
+     */
+    @EventHandler
+    public void onBlockDamageEvent(BlockDamageEvent event) {
+    	if(event.getBlock()==null) return;
+    	if(!isValidType(event.getBlock())) return;
+    	if(!isValidLocationDamaged(event.getBlock().getLocation())) return;
+    	
+    	Block block = event.getBlock();
+    	double x = block.getLocation().getBlockX();
+    	double y = block.getLocation().getBlockY();
+    	double z = block.getLocation().getBlockZ();
+		ArrayList<Block> blockList = new ArrayList<Block>();
+    	
+		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+1,y,z)));
+		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x-1,y,z)));
+		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y+1,z)));
+		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y-1,z)));
+		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+1)));
+		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
+		
+		for(int i=0;i<blockList.size();i++){
+			if(isValidType(blockList.get(i))  &&  !isNextToAir(blockList.get(i))   &&  isOre(blockList.get(i))){  
+				
+				for(int j=0;j<orplugin.eventLocationListMining.size();j++){
+		    		if(orplugin.eventLocationListMining.get(j).getWorld().equals(blockList.get(i).getWorld())  &&
+		    				orplugin.eventLocationListMining.get(j).distance(blockList.get(i).getLocation())<0.01){
+		    			
+		    		}
+		    		else{
+		    			blockList.get(i).setType(Material.STONE);
+		    		}
+		    	}
+			
+			}
+		}
+    }
+    
     @EventHandler
     public void onBlockPistonExtendEvent(BlockPistonExtendEvent event) {
     	if(event.getBlocks()==null) return;
