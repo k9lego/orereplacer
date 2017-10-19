@@ -127,7 +127,7 @@ public class OreReplacerListener implements Listener {
 		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
 		
 		for(int i=0;i<blockList.size();i++){
-			if(isValidType(blockList.get(i))  &&  !isNextToAir(blockList.get(i))   &&  isOre(blockList.get(i))){  
+			if(isOre(blockList.get(i))  &&  !isNextToAir(blockList.get(i))  ){  
 				
 				for(int j=0;j<orplugin.eventLocationListMining.size();j++){
 		    		if(orplugin.eventLocationListMining.get(j).getWorld().equals(blockList.get(i).getWorld())  &&

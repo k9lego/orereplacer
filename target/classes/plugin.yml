@@ -1,6 +1,6 @@
 name: OreReplacerPlugin
 main: io.github.kuohsuanlo.orereplacer.OreReplacerPlugin
-version: 1.0.12c
+version: 1.0.12d
 commands:
   orereplacer:
     description: .

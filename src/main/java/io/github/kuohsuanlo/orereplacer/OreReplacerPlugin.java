@@ -17,7 +17,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
 public class OreReplacerPlugin extends JavaPlugin {
     private final OreReplacerListener ORListener = new OreReplacerListener(this);
     private static final Logger log = Logger.getLogger("Minecraft");
@@ -56,11 +55,12 @@ public class OreReplacerPlugin extends JavaPlugin {
 
 
     public ArrayList<Location> eventLocationListDamaged;
-    public static final int EventLocationListMaxDamaged = 100;
+    public static final int EventLocationListMaxDamaged = 50;
     
     public ArrayList<Location> eventLocationListMining;
     public static final int EventLocationListMaxMining = 100;
     public ArrayList<World> enabledWorld;
+    
     
     @Override
     public void onDisable() {
