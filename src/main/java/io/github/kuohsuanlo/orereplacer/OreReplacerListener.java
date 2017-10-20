@@ -112,8 +112,7 @@ public class OreReplacerListener implements Listener {
     	if(event.getBlock()==null) return;
     	if(!isValidType(event.getBlock())) return;
     	if(!isValidLocationDamaged(event.getBlock().getLocation())) return;
-    	//if(!isValidLocation(event.getBlock().getLocation())) return;
-    	
+
     	Block block = event.getBlock();
     	double x = block.getLocation().getBlockX();
     	double y = block.getLocation().getBlockY();
