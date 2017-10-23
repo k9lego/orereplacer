@@ -3,6 +3,7 @@ package io.github.kuohsuanlo.orereplacer;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -22,6 +23,8 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class OreReplacerListener implements Listener {
 	private OreReplacerPlugin orplugin;
@@ -72,11 +75,11 @@ public class OreReplacerListener implements Listener {
 			return true;
 		}
     }
-    private boolean isValidType(Block block){
+    private boolean isStone(Block block){
     	if(orplugin.REPLACING == true){
-        	if( block.getType().equals(Material.STONE)  ||  isOre(block)){
-            		return true;
-            	}
+        	if( block.getType().equals(Material.STONE) ){
+        		return true;
+        	}
     	}
 
     	return false;
@@ -99,7 +102,13 @@ public class OreReplacerListener implements Listener {
     }
     private boolean isValidWorld(World world){
     	for(int i=0;i<orplugin.enabledWorld.size();i++){
-    		if(world.equals(orplugin.enabledWorld.get(i))) return true;
+    		if(world.getName().equals(orplugin.enabledWorld.get(i))){
+    			//Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED+"[OreReplacer] : world name : "+world.getName()+" enabled!");
+    			return true;
+    		}
+    		else{
+    			//Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED+"[OreReplacer] : world name : "+world.getName()+"/"+orplugin.enabledWorld.get(i));		
+    		}
     	}
     	return false;
     }
@@ -110,7 +119,9 @@ public class OreReplacerListener implements Listener {
     @EventHandler
     public void onBlockDamageEvent(BlockDamageEvent event) {
     	if(event.getBlock()==null) return;
-    	if(!isValidType(event.getBlock())) return;
+    	
+    	if(isOre(event.getBlock())) return;
+    	if(!isStone(event.getBlock())) return;
     	if(!isValidLocationDamaged(event.getBlock().getLocation())) return;
 
     	Block block = event.getBlock();
@@ -150,14 +161,12 @@ public class OreReplacerListener implements Listener {
 		blocks.addAll(event.getBlocks());
 		for(int i=0;i<blocks.size();i++){
 			Block block = blocks.get(i);
-			if(!isValidType(block)) return; 
+			if(!isStone(block)) return; 
 			if(!isValidWorld(block.getWorld())) return;
 			if( this.isValidLocation(block.getLocation()) ){
 				replaceFirstOre(block);
 			}
 		}
-		
-        //plugin.getLogger().info(event.getPlayer().getName() + " joined the server! :D");
     }
     @EventHandler
     public void onBlockPistonRetractEvent(BlockPistonRetractEvent event) {
@@ -166,34 +175,39 @@ public class OreReplacerListener implements Listener {
 		blocks.addAll(event.getBlocks());
 		for(int i=0;i<blocks.size();i++){
 			Block block = blocks.get(i);
-			if(!isValidType(block)) return; 
+			if(!isStone(block)) return; 
 			if(!isValidWorld(block.getWorld())) return;
 			if( this.isValidLocation(block.getLocation()) ){
 				replaceFirstOre(block);
 			}
 		}
 		
-        //plugin.getLogger().info(event.getPlayer().getName() + " joined the server! :D");
     }
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
 		Block block = event.getBlock();
-		if(!isValidType(block)) return; 
-		if(!isValidWorld(block.getWorld())) return;
+		if(isOre(event.getBlock())){
+			return;
+		}
+		if(!isStone(block)) {
+			return;
+		}
+		if(!isValidWorld(block.getWorld())) {
+			return;
+		}
+		
 		if( this.isValidLocation(block.getLocation()) ){
 			replaceFirstOre(block);
 		}
-        //plugin.getLogger().info(event.getPlayer().getName() + " joined the server! :D");
     }
 	@EventHandler
     public void onBlockExplodeEvent(BlockExplodeEvent event) {
 		Block block = event.getBlock();
-		if(!isValidType(block)) return; 
+		if(!isStone(block)) return; 
 		if(!isValidWorld(block.getWorld())) return;
 		if( this.isValidLocation(block.getLocation()) ){
 			replaceFirstOre(block);
 		}
-        //plugin.getLogger().info(event.getPlayer().getName() + " joined the server! :D");
     }
     
 	private int getOreNumber(Material m){
@@ -252,7 +266,7 @@ public class OreReplacerListener implements Listener {
 			
 			// pick one of them as an ore block.
 	    	for(int j=0;j<blockList.size();j++){
-	    		if(isValidType(blockList.get(randIdx[j]))  &&  !isNextToAir(blockList.get(randIdx[j])) ){
+	    		if(isStone(blockList.get(randIdx[j]))  &&  !isNextToAir(blockList.get(randIdx[j])) ){
 	    			blockList.get(randIdx[j]).setType(oriBlock.getType());
 	    			block = blockList.get(randIdx[j]);
 	    			
@@ -295,7 +309,7 @@ public class OreReplacerListener implements Listener {
     	 * as soon as the first block is break.  (only if it's an ore block)
     	 */
     	for(int i=0;i<blockList.size();i++){
-    		if(isValidType(blockList.get(i))  &&  !isNextToAir(blockList.get(i)) ){  
+    		if(isOre(blockList.get(i))  &&  !isNextToAir(blockList.get(i)) ){  
     			boolean isReplacedByOre = false;
 				if(isDiamond(blockList.get(i))){
 					isReplacedByOre = true;

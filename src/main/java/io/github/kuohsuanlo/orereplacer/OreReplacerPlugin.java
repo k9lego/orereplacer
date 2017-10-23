@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -16,6 +17,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class OreReplacerPlugin extends JavaPlugin {
     private final OreReplacerListener ORListener = new OreReplacerListener(this);
@@ -59,7 +62,7 @@ public class OreReplacerPlugin extends JavaPlugin {
     
     public ArrayList<Location> eventLocationListMining;
     public static final int EventLocationListMaxMining = 100;
-    public ArrayList<World> enabledWorld;
+    public ArrayList<String> enabledWorld;
     
     
     @Override
@@ -141,12 +144,11 @@ public class OreReplacerPlugin extends JavaPlugin {
         getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
     }
     private void loadConfig(){
-    	enabledWorld = new  ArrayList<World> ();
+    	enabledWorld = new  ArrayList<String> ();
     	String[] world_names = config.getString("ENABLED_WORLD").split(",");
     	for(int i=0;i<world_names.length;i++){
-    		World world = this.getServer().getWorld(world_names[i]);
-    		if(world!=null)
-    			enabledWorld.add(world);
+    		Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED+"[OreReplacer] : world name - "+world_names[i]+" added!");
+    		enabledWorld.add(world_names[i]);
     	}
     	
     	PROBABILITY_DIAMOND = config.getDouble("PROBABILITY_DIAMOND");
