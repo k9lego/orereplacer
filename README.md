@@ -7,8 +7,8 @@ A zero burden plugin that ends Xray-mining forever. This plugin is a minecraft s
   - Consume theoratically least network traffic and computational effort.
   - Do not affect any normal player
  
-This plugin will dynamically generate the ore and stone block that is not connect to the air or water when they get broken. 
-So X-Ray players would think they are getting close to the block. But after they break the last stone. They would find the ores disappear.
+This plugin will dynamically generate the ore and stone block that is not connect to the air or water when they get broken. ![](https://www.csie.ntu.edu.tw/~b98902055/items/1-0.png) ---> ![](https://www.csie.ntu.edu.tw/~b98902055/items/16-0.png) ![](https://www.csie.ntu.edu.tw/~b98902055/items/15-0.png) ![](https://www.csie.ntu.edu.tw/~b98902055/items/14-0.png) ![](https://www.csie.ntu.edu.tw/~b98902055/items/56-0.png)  ![](https://www.csie.ntu.edu.tw/~b98902055/items/129-0.png)  ![](https://www.csie.ntu.edu.tw/~b98902055/items/73-0.png)  ![](https://www.csie.ntu.edu.tw/~b98902055/items/21-0.png)  ![](https://www.csie.ntu.edu.tw/~b98902055/items/153-0.png) 
+So X-Ray players would think they are getting close to the block. But after they break the last stone. They would find the ores disappear.  ![](https://www.csie.ntu.edu.tw/~b98902055/items/56-0.png)  ---> ![](https://www.csie.ntu.edu.tw/~b98902055/items/1-0.png) 
 ---------
 
   ### Features : 
