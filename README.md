@@ -2,18 +2,17 @@
 [![mcfallout](https://i.imgur.com/o6S7V07.png)](https://mcfallout.net)
 Jar Download link: [Spigot Page](https://www.spigotmc.org/resources/orereplacer.22158/)
 
-A zero burden plugin that ends Xray-mining forever. This plugin is a minecraft server-side spigot plugin in order to enhance the experience of:
+###### A zero burden plugin that ends Xray-mining forever. This plugin is a minecraft server-side spigot plugin in order to enhance the experience of:
   - Prevent any method of X-Ray mining 100%.
   - Consume theoratically least network traffic and computational effort.
   - Do not affect any normal player
- 
-This plugin will dynamically generate the ore and stone block that is not connect to the air or water when they get broken. ![](https://www.csie.ntu.edu.tw/~b98902055/items/1-0.png) ---> ![](https://www.csie.ntu.edu.tw/~b98902055/items/16-0.png) ![](https://www.csie.ntu.edu.tw/~b98902055/items/15-0.png) ![](https://www.csie.ntu.edu.tw/~b98902055/items/14-0.png) ![](https://www.csie.ntu.edu.tw/~b98902055/items/56-0.png)  ![](https://www.csie.ntu.edu.tw/~b98902055/items/129-0.png)  ![](https://www.csie.ntu.edu.tw/~b98902055/items/73-0.png)  ![](https://www.csie.ntu.edu.tw/~b98902055/items/21-0.png)  ![](https://www.csie.ntu.edu.tw/~b98902055/items/153-0.png) 
-So X-Ray players would think they are getting close to the block. But after they break the last stone. They would find the ores disappear.  ![](https://www.csie.ntu.edu.tw/~b98902055/items/56-0.png)  ---> ![](https://www.csie.ntu.edu.tw/~b98902055/items/1-0.png) 
+###### This plugin will dynamically generate the ore and stone block that is not connect to the air or water when they get broken. ![](https://www.csie.ntu.edu.tw/~b98902055/items/1-0.png) ---> ![](https://www.csie.ntu.edu.tw/~b98902055/items/16-0.png) ![](https://www.csie.ntu.edu.tw/~b98902055/items/15-0.png) ![](https://www.csie.ntu.edu.tw/~b98902055/items/14-0.png) ![](https://www.csie.ntu.edu.tw/~b98902055/items/56-0.png)  ![](https://www.csie.ntu.edu.tw/~b98902055/items/129-0.png)  ![](https://www.csie.ntu.edu.tw/~b98902055/items/73-0.png)  ![](https://www.csie.ntu.edu.tw/~b98902055/items/21-0.png)  ![](https://www.csie.ntu.edu.tw/~b98902055/items/153-0.png) 
+###### So X-Ray players would think they are getting close to the block. But after they break the last stone. They would find the ores disappear.  ![](https://www.csie.ntu.edu.tw/~b98902055/items/56-0.png)  ---> ![](https://www.csie.ntu.edu.tw/~b98902055/items/1-0.png) 
 ---------
 
   ### Features : 
   Enhanced mining mechanism : 
-    1. Experience : The probability and ore distribution is based on minecraft vanilla settings.
+    1. Experience : The probability and ore distribution is based on minecraft vanilla settings. Normal player won't notice the transformation.
     2. Efficiency : Blocks are generated only when players reveal them. No excessive fake ores transimitted. 
     3. Configurable : All of the ores probability and distribution could be set and revised immediately.
     4. Extendable : Tested on 70 players server, less than 0.1% TPS occupation.
