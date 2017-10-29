@@ -24,32 +24,40 @@ public class OreReplacerPlugin extends JavaPlugin {
     private final OreReplacerListener ORListener = new OreReplacerListener(this);
     private static final Logger log = Logger.getLogger("Minecraft");
 
-    public int MAX_DIAMOND = 4;
-    public int MAX_GOLD = 4;
-    public int MAX_IRON = 5;
-    public int MAX_COAL = 5;
+    public int MAX_DIAMOND = 6;
+    public int MAX_GOLD = 6;
+    public int MAX_IRON = 10;
+    public int MAX_COAL = 10;
     public int MAX_LAPIS = 4;
-    public int MAX_REDSTONE = 6;
-    public int MAX_EMERALD= 2;
+    public int MAX_REDSTONE = 10;
+    public int MAX_EMERALD= 4;
     
-    public double PROBABILITY_DIAMOND = 0;
-    public double PROBABILITY_GOLD = 0;
-    public double PROBABILITY_IRON = 0;
-    public double PROBABILITY_COAL = 0;
-    public double PROBABILITY_LAPIS = 0;
-    public double PROBABILITY_REDSTONE = 0;
-    public double PROBABILITY_EMERALD= 0;
+    public int MIN_DIAMOND = 2;
+    public int MIN_GOLD = 3;
+    public int MIN_IRON = 4;
+    public int MIN_COAL = 3;
+    public int MIN_LAPIS = 2;
+    public int MIN_REDSTONE = 4;
+    public int MIN_EMERALD= 2;
+    
+    public double PROBABILITY_DIAMOND = 0.0012;
+    public double PROBABILITY_GOLD = 0.0036;
+    public double PROBABILITY_IRON = 0.0016;
+    public double PROBABILITY_COAL = 0.0018;
+    public double PROBABILITY_LAPIS = 0.0012;
+    public double PROBABILITY_REDSTONE = 0.010;
+    public double PROBABILITY_EMERALD= 0.0010;
     
     public double PROBABILITY_INCREASING_CONSTANT= 3;
 
 
-    public boolean REPLACING_DIAMOND = false;
-    public boolean REPLACING_GOLD = false;
-    public boolean REPLACING_IRON = false;
-    public boolean REPLACING_COAL = false;
-    public boolean REPLACING_LAPIS = false;
-    public boolean REPLACING_REDSTONE = false;
-    public boolean REPLACINGY_EMERALD = false;
+    public boolean REPLACING_DIAMOND = true;
+    public boolean REPLACING_GOLD = true;
+    public boolean REPLACING_IRON = true;
+    public boolean REPLACING_COAL = true;
+    public boolean REPLACING_LAPIS = true;
+    public boolean REPLACING_REDSTONE = true;
+    public boolean REPLACINGY_EMERALD = true;
     
     public boolean REPLACING=true;
 
@@ -58,10 +66,10 @@ public class OreReplacerPlugin extends JavaPlugin {
 
 
     public ArrayList<Location> eventLocationListDamaged;
-    public static final int EventLocationListMaxDamaged = 50;
+    public static final int EventLocationListMaxDamaged = 200;
     
     public ArrayList<Location> eventLocationListMining;
-    public static final int EventLocationListMaxMining = 100;
+    public static final int EventLocationListMaxMining = 200;
     public ArrayList<String> enabledWorld;
     
     
@@ -105,32 +113,41 @@ public class OreReplacerPlugin extends JavaPlugin {
 
     	config.addDefault("ENABLED_WORLD","world,world_nether,world_the_end");
     	
-    	config.addDefault("PROBABILITY_DIAMOND",0.001);
-    	config.addDefault("PROBABILITY_GOLD",0.0012);
-    	config.addDefault("PROBABILITY_IRON",0.006);
-    	config.addDefault("PROBABILITY_COAL",0.008);
-    	config.addDefault("PROBABILITY_LAPIS",0.0012);
-    	config.addDefault("PROBABILITY_REDSTONE",0.008);
-    	config.addDefault("PROBABILITY_EMERALD",0.0008);
+    	config.addDefault("PROBABILITY_DIAMOND",PROBABILITY_DIAMOND);
+    	config.addDefault("PROBABILITY_GOLD",PROBABILITY_GOLD);
+    	config.addDefault("PROBABILITY_IRON",PROBABILITY_IRON);
+    	config.addDefault("PROBABILITY_COAL",PROBABILITY_COAL);
+    	config.addDefault("PROBABILITY_LAPIS",PROBABILITY_LAPIS);
+    	config.addDefault("PROBABILITY_REDSTONE",PROBABILITY_REDSTONE);
+    	config.addDefault("PROBABILITY_EMERALD",PROBABILITY_EMERALD);
     	
 
-    	config.addDefault("MAX_DIAMOND",4);
-    	config.addDefault("MAX_GOLD",4);
-    	config.addDefault("MAX_IRON",5);
-    	config.addDefault("MAX_COAL",5);
-    	config.addDefault("MAX_LAPIS",4);
-    	config.addDefault("MAX_REDSTONE",6);
-    	config.addDefault("MAX_EMERALD",2);
+    	config.addDefault("MAX_DIAMOND",MAX_DIAMOND);
+    	config.addDefault("MAX_GOLD",MAX_GOLD);
+    	config.addDefault("MAX_IRON",MAX_IRON);
+    	config.addDefault("MAX_COAL",MAX_COAL);
+    	config.addDefault("MAX_LAPIS",MAX_LAPIS);
+    	config.addDefault("MAX_REDSTONE",MAX_REDSTONE);
+    	config.addDefault("MAX_EMERALD",MAX_EMERALD);
+
+
+    	config.addDefault("MIN_DIAMOND",MIN_DIAMOND);
+    	config.addDefault("MIN_GOLD",MIN_GOLD);
+    	config.addDefault("MIN_IRON",MIN_IRON);
+    	config.addDefault("MIN_COAL",MIN_COAL);
+    	config.addDefault("MIN_LAPIS",MIN_LAPIS);
+    	config.addDefault("MIN_REDSTONE",MIN_REDSTONE);
+    	config.addDefault("MIN_EMERALD",MIN_EMERALD);
 
     	config.addDefault("PROBABILITY_INCREASING_CONSTANT",1.0);
     	
     	config.addDefault("REPLACING_DIAMOND",true);
     	config.addDefault("REPLACINGY_EMERALD",true);
     	config.addDefault("REPLACING_GOLD",true);
-    	config.addDefault("REPLACING_IRON",false);
-    	config.addDefault("REPLACING_COAL",false);
+    	config.addDefault("REPLACING_IRON",true);
+    	config.addDefault("REPLACING_COAL",true);
     	config.addDefault("REPLACING_LAPIS",true);
-    	config.addDefault("REPLACING_REDSTONE",false);
+    	config.addDefault("REPLACING_REDSTONE",true);
     	
     	config.options().copyDefaults(true);
     	saveConfig();
@@ -179,13 +196,13 @@ public class OreReplacerPlugin extends JavaPlugin {
      	    
      	
      	
-     	PROBABILITY_DIAMOND = PROBABILITY_DIAMOND*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_DIAMOND+1));
-     	PROBABILITY_GOLD = PROBABILITY_GOLD*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_GOLD+1));
-     	PROBABILITY_IRON = PROBABILITY_IRON*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_IRON+1));
-     	PROBABILITY_COAL = PROBABILITY_COAL*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_COAL+1));
-     	PROBABILITY_LAPIS = PROBABILITY_LAPIS*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_LAPIS+1));
-     	PROBABILITY_REDSTONE = PROBABILITY_REDSTONE*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_REDSTONE+1));
-     	PROBABILITY_EMERALD = PROBABILITY_EMERALD*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_EMERALD+1));
+     	PROBABILITY_DIAMOND = PROBABILITY_DIAMOND*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_DIAMOND+MIN_DIAMOND));
+     	PROBABILITY_GOLD = PROBABILITY_GOLD*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_GOLD+MIN_GOLD));
+     	PROBABILITY_IRON = PROBABILITY_IRON*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_IRON+MIN_IRON));
+     	PROBABILITY_COAL = PROBABILITY_COAL*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_COAL+MIN_COAL));
+     	PROBABILITY_LAPIS = PROBABILITY_LAPIS*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_LAPIS+MIN_LAPIS));
+     	PROBABILITY_REDSTONE = PROBABILITY_REDSTONE*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_REDSTONE+MIN_REDSTONE));
+     	PROBABILITY_EMERALD = PROBABILITY_EMERALD*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_EMERALD+MIN_REDSTONE));
      	
      	
     }
