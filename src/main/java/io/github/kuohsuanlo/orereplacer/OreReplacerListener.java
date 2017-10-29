@@ -75,13 +75,14 @@ public class OreReplacerListener implements Listener {
 			return true;
 		}
     }
-    private boolean isStone(Block block){
+    private boolean isUndergroundBlock(Block block){
     	if(orplugin.REPLACING == true){
-        	if( block.getType().equals(Material.STONE) ){
+        	if( block.getType().equals(Material.STONE) ||
+        		block.getType().equals(Material.DIRT) ||
+        		block.getType().equals(Material.GRAVEL) ){
         		return true;
         	}
     	}
-
     	return false;
     }
     private boolean isOre(Block block){
@@ -118,13 +119,15 @@ public class OreReplacerListener implements Listener {
      */
     @EventHandler
     public void onBlockDamageEvent(BlockDamageEvent event) {
-    	if(event.getBlock()==null) return;
     	
-    	if(isOre(event.getBlock())) return;
-    	if(!isStone(event.getBlock())) return;
-    	if(!isValidLocationDamaged(event.getBlock().getLocation())) return;
-
     	Block block = event.getBlock();
+    	if(block==null) return;
+    	
+    	
+    	if(!isOre(block)  &&  !isUndergroundBlock(block)) return;
+    	if(!isValidWorld(block.getWorld())) return;
+    	if(!isValidLocationDamaged(block.getLocation())) return;
+
     	double x = block.getLocation().getBlockX();
     	double y = block.getLocation().getBlockY();
     	double z = block.getLocation().getBlockZ();
@@ -138,18 +141,19 @@ public class OreReplacerListener implements Listener {
 		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
 		
 		for(int i=0;i<blockList.size();i++){
-			if(isOre(blockList.get(i))  &&  !isNextToAir(blockList.get(i))  ){  
-				
-				for(int j=0;j<orplugin.eventLocationListMining.size();j++){
-		    		if(orplugin.eventLocationListMining.get(j).getWorld().equals(blockList.get(i).getWorld())  &&
-		    				orplugin.eventLocationListMining.get(j).distance(blockList.get(i).getLocation())<0.01){
-		    			
-		    		}
-		    		else{
-		    			blockList.get(i).setType(Material.STONE);
-		    		}
-		    	}
-			
+			Block blockAdj = blockList.get(i);
+    		if(isOre(blockAdj)  ||  isUndergroundBlock(blockAdj)){
+    			if( !isNextToAir(blockAdj) ){  
+					for(int j=0;j<orplugin.eventLocationListDamaged.size();j++){
+			    		if(orplugin.eventLocationListDamaged.get(j).getWorld().equals(blockList.get(i).getWorld())  &&
+			    				orplugin.eventLocationListDamaged.get(j).distance(blockList.get(i).getLocation())<0.01){
+			    			
+			    		}
+			    		else{
+			    			blockList.get(i).setType(Material.STONE);
+			    		}
+			    	}
+    			}	
 			}
 		}
     }
@@ -161,7 +165,7 @@ public class OreReplacerListener implements Listener {
 		blocks.addAll(event.getBlocks());
 		for(int i=0;i<blocks.size();i++){
 			Block block = blocks.get(i);
-			if(!isStone(block)) return; 
+			if(!isOre(block)  &&  !isUndergroundBlock(block)) return;
 			if(!isValidWorld(block.getWorld())) return;
 			if( this.isValidLocation(block.getLocation()) ){
 				replaceFirstOre(block);
@@ -175,7 +179,7 @@ public class OreReplacerListener implements Listener {
 		blocks.addAll(event.getBlocks());
 		for(int i=0;i<blocks.size();i++){
 			Block block = blocks.get(i);
-			if(!isStone(block)) return; 
+			if(!isOre(block)  &&  !isUndergroundBlock(block)) return;
 			if(!isValidWorld(block.getWorld())) return;
 			if( this.isValidLocation(block.getLocation()) ){
 				replaceFirstOre(block);
@@ -186,12 +190,7 @@ public class OreReplacerListener implements Listener {
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
 		Block block = event.getBlock();
-		if(isOre(event.getBlock())){
-			return;
-		}
-		if(!isStone(block)) {
-			return;
-		}
+		if(!isOre(block)  &&  !isUndergroundBlock(block)) return;
 		if(!isValidWorld(block.getWorld())) {
 			return;
 		}
@@ -203,7 +202,7 @@ public class OreReplacerListener implements Listener {
 	@EventHandler
     public void onBlockExplodeEvent(BlockExplodeEvent event) {
 		Block block = event.getBlock();
-		if(!isStone(block)) return; 
+		if(!isOre(block)  &&  !isUndergroundBlock(block)) return;
 		if(!isValidWorld(block.getWorld())) return;
 		if( this.isValidLocation(block.getLocation()) ){
 			replaceFirstOre(block);
@@ -266,28 +265,31 @@ public class OreReplacerListener implements Listener {
 			
 			// pick one of them as an ore block.
 	    	for(int j=0;j<blockList.size();j++){
-	    		if(isStone(blockList.get(randIdx[j]))  &&  !isNextToAir(blockList.get(randIdx[j])) ){
-	    			blockList.get(randIdx[j]).setType(oriBlock.getType());
-	    			block = blockList.get(randIdx[j]);
-	    			
-	    			//all nearby blocks marked as dirty
-	    			isValidLocation(block.getLocation().add(1,0,0));
-	    			isValidLocation(block.getLocation().add(-1,0,0));
-	    			isValidLocation(block.getLocation().add(0,1,0));
-	    			isValidLocation(block.getLocation().add(0,-1,0));
-	    			isValidLocation(block.getLocation().add(0,0,1));
-	    			isValidLocation(block.getLocation().add(0,0,-1));
-	    			
-
-	    			isValidLocationDamaged(block.getLocation().add(1,0,0));
-	    			isValidLocationDamaged(block.getLocation().add(-1,0,0));
-	    			isValidLocationDamaged(block.getLocation().add(0,1,0));
-	    			isValidLocationDamaged(block.getLocation().add(0,-1,0));
-	    			isValidLocationDamaged(block.getLocation().add(0,0,1));
-	    			isValidLocationDamaged(block.getLocation().add(0,0,-1));
-	    			
-	    			
-	    			break;
+	    		Block blockAdj = blockList.get(randIdx[j]);
+	    		if(isOre(blockAdj)  ||  isUndergroundBlock(blockAdj)){
+	    			if( !isNextToAir(blockAdj) ){  
+		    			blockList.get(randIdx[j]).setType(oriBlock.getType());
+		    			block = blockList.get(randIdx[j]);
+		    			
+		    			//all nearby blocks marked as dirty
+		    			isValidLocation(block.getLocation().add(1,0,0));
+		    			isValidLocation(block.getLocation().add(-1,0,0));
+		    			isValidLocation(block.getLocation().add(0,1,0));
+		    			isValidLocation(block.getLocation().add(0,-1,0));
+		    			isValidLocation(block.getLocation().add(0,0,1));
+		    			isValidLocation(block.getLocation().add(0,0,-1));
+		    			
+	
+		    			isValidLocationDamaged(block.getLocation().add(1,0,0));
+		    			isValidLocationDamaged(block.getLocation().add(-1,0,0));
+		    			isValidLocationDamaged(block.getLocation().add(0,1,0));
+		    			isValidLocationDamaged(block.getLocation().add(0,-1,0));
+		    			isValidLocationDamaged(block.getLocation().add(0,0,1));
+		    			isValidLocationDamaged(block.getLocation().add(0,0,-1));
+		    			
+		    			
+		    			break;
+	    			}
 	    		}
 	    	}
 		}
@@ -309,35 +311,38 @@ public class OreReplacerListener implements Listener {
     	 * as soon as the first block is break.  (only if it's an ore block)
     	 */
     	for(int i=0;i<blockList.size();i++){
-    		if(isOre(blockList.get(i))  &&  !isNextToAir(blockList.get(i)) ){  
-    			boolean isReplacedByOre = false;
-				if(isDiamond(blockList.get(i))){
-					isReplacedByOre = true;
-				}
-				else if(isEmerald(blockList.get(i))){
-					isReplacedByOre = true;
-				}
-				else if(isLapis(blockList.get(i))){
-					isReplacedByOre = true;
-				}
-				else if(isGold(blockList.get(i))){
-					isReplacedByOre = true;
-				}
-				else if(isRedStone(blockList.get(i))){
-					isReplacedByOre = true;
-				}
-				else if(isIron(blockList.get(i))){
-					isReplacedByOre = true;
-				}
-				else if(isCoal(blockList.get(i))){
-					isReplacedByOre = true;
-				}
-				
-				if(isReplacedByOre){
-					if(isValidLocation(blockList.get(i).getLocation()))
-						replaceRemainedOre(blockList.get(i));
-				}
-			}
+    		if(isOre(blockList.get(i))  ||  isUndergroundBlock(blockList.get(i))){
+    			if( !isNextToAir(blockList.get(i)) ){  
+	    		
+	    			boolean isReplacedByOre = false;
+					if(isDiamond(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					else if(isEmerald(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					else if(isLapis(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					else if(isGold(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					else if(isRedStone(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					else if(isIron(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					else if(isCoal(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					
+					if(isReplacedByOre){
+						if(isValidLocation(blockList.get(i).getLocation()))
+							replaceRemainedOre(blockList.get(i));
+					}
+    			}
+    		}
     	}
     }
 
