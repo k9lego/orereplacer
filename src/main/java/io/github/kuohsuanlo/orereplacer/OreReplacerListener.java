@@ -34,6 +34,7 @@ public class OreReplacerListener implements Listener {
 	
 	public int currentIdxDamage=0;
 	private boolean isValidLocationDamaged(Location location){
+		if(location.getBlockY()>70) return false;
     	for(int i=0;i<orplugin.eventLocationListDamaged.size();i++){
     		if(orplugin.eventLocationListDamaged.get(i).getWorld().equals(location.getWorld())  &&
     				orplugin.eventLocationListDamaged.get(i).distance(location)<0.01){
@@ -56,6 +57,7 @@ public class OreReplacerListener implements Listener {
 	
 	public int currentIdx=0;
 	private boolean isValidLocation(Location location){
+		if(location.getBlockY()>70) return false;
     	for(int i=0;i<orplugin.eventLocationListMining.size();i++){
     		if(orplugin.eventLocationListMining.get(i).getWorld().equals(location.getWorld())  &&
     				orplugin.eventLocationListMining.get(i).distance(location)<0.01){
@@ -123,7 +125,7 @@ public class OreReplacerListener implements Listener {
     	Block block = event.getBlock();
     	if(block==null) return;
     	
-    	
+    	if(isNextToAir(block) ) return;
     	if(!isOre(block)  &&  !isUndergroundBlock(block)) return;
     	if(!isValidWorld(block.getWorld())) return;
     	if(!isValidLocationDamaged(block.getLocation())) return;
@@ -190,6 +192,7 @@ public class OreReplacerListener implements Listener {
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
 		Block block = event.getBlock();
+		
 		if(!isOre(block)  &&  !isUndergroundBlock(block)) return;
 		if(!isValidWorld(block.getWorld())) {
 			return;
