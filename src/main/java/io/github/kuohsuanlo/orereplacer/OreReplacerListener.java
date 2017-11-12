@@ -34,6 +34,7 @@ public class OreReplacerListener implements Listener {
 	
 	public int currentIdxDamage=0;
 	private boolean isValidLocationDamaged(Location location){
+		if(location.getBlockY()>70) return false;
     	for(int i=0;i<orplugin.eventLocationListDamaged.size();i++){
     		if(orplugin.eventLocationListDamaged.get(i).getWorld().equals(location.getWorld())  &&
     				orplugin.eventLocationListDamaged.get(i).distance(location)<0.01){
@@ -56,6 +57,7 @@ public class OreReplacerListener implements Listener {
 	
 	public int currentIdx=0;
 	private boolean isValidLocation(Location location){
+		if(location.getBlockY()>70) return false;
     	for(int i=0;i<orplugin.eventLocationListMining.size();i++){
     		if(orplugin.eventLocationListMining.get(i).getWorld().equals(location.getWorld())  &&
     				orplugin.eventLocationListMining.get(i).distance(location)<0.01){
@@ -101,6 +103,22 @@ public class OreReplacerListener implements Listener {
 
     	return false;
     }
+    private void replaceOreToUndergroudBlock(Block block){
+    	if(orplugin.REPLACING == true){
+        	if( block.getType().equals(Material.DIAMOND_ORE) && orplugin.REPLACING_DIAMOND ||   
+        			block.getType().equals(Material.EMERALD_ORE) && orplugin.REPLACINGY_EMERALD  ||   
+        			block.getType().equals(Material.LAPIS_ORE) && orplugin.REPLACING_LAPIS  ||    
+        			block.getType().equals(Material.REDSTONE_ORE) && orplugin.REPLACING_REDSTONE  ||    
+        			block.getType().equals(Material.GOLD_ORE) && orplugin.REPLACING_GOLD  ||   
+        			block.getType().equals(Material.IRON_ORE) && orplugin.REPLACING_IRON  ||   
+        			block.getType().equals(Material.COAL_ORE) && orplugin.REPLACING_COAL 
+            			){
+        		
+        		block.setType(Material.STONE);
+            }
+    	}
+
+    }
     private boolean isValidWorld(World world){
     	for(int i=0;i<orplugin.enabledWorld.size();i++){
     		if(world.getName().equals(orplugin.enabledWorld.get(i))){
@@ -123,7 +141,6 @@ public class OreReplacerListener implements Listener {
     	Block block = event.getBlock();
     	if(block==null) return;
     	
-    	
     	if(!isOre(block)  &&  !isUndergroundBlock(block)) return;
     	if(!isValidWorld(block.getWorld())) return;
     	if(!isValidLocationDamaged(block.getLocation())) return;
@@ -143,14 +160,15 @@ public class OreReplacerListener implements Listener {
 		for(int i=0;i<blockList.size();i++){
 			Block blockAdj = blockList.get(i);
     		if(isOre(blockAdj)  ||  isUndergroundBlock(blockAdj)){
-    			if( !isNextToAir(blockAdj) ){  
+    			if( isCoverByUndergoundBlock(blockAdj) ){  
 					for(int j=0;j<orplugin.eventLocationListDamaged.size();j++){
 			    		if(orplugin.eventLocationListDamaged.get(j).getWorld().equals(blockList.get(i).getWorld())  &&
 			    				orplugin.eventLocationListDamaged.get(j).distance(blockList.get(i).getLocation())<0.01){
 			    			
 			    		}
 			    		else{
-			    			if(isOre(blockAdj)) blockList.get(i).setType(Material.STONE);
+			    			
+			    			if(isOre(blockAdj)) replaceOreToUndergroudBlock(blockList.get(i));
 			    		}
 			    	}
     			}	
@@ -190,6 +208,7 @@ public class OreReplacerListener implements Listener {
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
 		Block block = event.getBlock();
+		
 		if(!isOre(block)  &&  !isUndergroundBlock(block)) return;
 		if(!isValidWorld(block.getWorld())) {
 			return;
@@ -267,7 +286,7 @@ public class OreReplacerListener implements Listener {
 	    	for(int j=0;j<blockList.size();j++){
 	    		Block blockAdj = blockList.get(randIdx[j]);
 	    		if(isOre(blockAdj)  ||  isUndergroundBlock(blockAdj)){
-	    			if( !isNextToAir(blockAdj) ){  
+	    			if( isCoverByUndergoundBlock(blockAdj) ){  
 		    			blockList.get(randIdx[j]).setType(oriBlock.getType());
 		    			block = blockList.get(randIdx[j]);
 		    			
@@ -312,7 +331,7 @@ public class OreReplacerListener implements Listener {
     	 */
     	for(int i=0;i<blockList.size();i++){
     		if(isOre(blockList.get(i))  ||  isUndergroundBlock(blockList.get(i))){
-    			if( !isNextToAir(blockList.get(i)) ){  
+    			if( isCoverByUndergoundBlock(blockList.get(i)) ){  
 	    		
 	    			boolean isReplacedByOre = false;
 					if(isDiamond(blockList.get(i))){
@@ -346,7 +365,7 @@ public class OreReplacerListener implements Listener {
     	}
     }
 
-    private boolean isNextToAir(Block block){
+    private boolean isCoverByUndergoundBlock(Block block){
     	double x = block.getLocation().getBlockX();
     	double y = block.getLocation().getBlockY();
     	double z = block.getLocation().getBlockZ();
@@ -359,15 +378,28 @@ public class OreReplacerListener implements Listener {
     	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
     	
     	for(int i=0;i<blockList.size();i++){
-    		if(	blockList.get(i).getType().equals(Material.AIR)  ||  
-    			blockList.get(i).getType().equals(Material.WATER)  ||  
-    			blockList.get(i).getType().equals(Material.GLASS)
+    		if(	blockList.get(i).getType().equals(Material.STONE)  ||  
+    			blockList.get(i).getType().equals(Material.GRAVEL)  ||  
+    			blockList.get(i).getType().equals(Material.DIRT)  ||  
+    			blockList.get(i).getType().equals(Material.STATIONARY_LAVA)  ||
+    			blockList.get(i).getType().equals(Material.BEDROCK)    ||
+    			blockList.get(i).getType().equals(Material.COAL_ORE)    ||
+    			blockList.get(i).getType().equals(Material.IRON_ORE)    ||
+    			blockList.get(i).getType().equals(Material.GOLD_ORE)    ||
+    			blockList.get(i).getType().equals(Material.DIAMOND_ORE)    ||
+    			blockList.get(i).getType().equals(Material.EMERALD_ORE)    ||
+    			blockList.get(i).getType().equals(Material.REDSTONE_ORE)    ||
+    			blockList.get(i).getType().equals(Material.LAPIS_ORE)    ||
+    			blockList.get(i).getType().equals(Material.CLAY)       
     			){
-    			return true;
+    			
+    		}
+    		else{
+    			return false;
     		}
     	}
     	
-    	return false;
+    	return true;
     }
     private boolean isDiamond(Block stone){
     	double max_y = 15;
@@ -379,7 +411,7 @@ public class OreReplacerListener implements Listener {
     			return true;
     		}
     		else if(isOre(stone)){
-    			stone.setType(Material.STONE);
+    			replaceOreToUndergroudBlock(stone);
     			return false;
     		}
     	}
@@ -395,7 +427,7 @@ public class OreReplacerListener implements Listener {
     			return true;
     		}
     		else if(isOre(stone)){
-    			stone.setType(Material.STONE);
+    			replaceOreToUndergroudBlock(stone);
     			return false;
     		}
     	}
@@ -411,7 +443,7 @@ public class OreReplacerListener implements Listener {
     			return true;
     		}
     		else if(isOre(stone)){
-    			stone.setType(Material.STONE);
+    			replaceOreToUndergroudBlock(stone);
     			return false;
     		}
     	}
@@ -427,7 +459,7 @@ public class OreReplacerListener implements Listener {
     			return true;
     		}
     		else if(isOre(stone)){
-    			stone.setType(Material.STONE);
+    			replaceOreToUndergroudBlock(stone);
     			return false;
     		}
     	}
@@ -443,7 +475,7 @@ public class OreReplacerListener implements Listener {
     			return true;
     		}
     		else if(isOre(stone)){
-    			stone.setType(Material.STONE);
+    			replaceOreToUndergroudBlock(stone);
     			return false;
     		}
     	}
@@ -459,7 +491,7 @@ public class OreReplacerListener implements Listener {
     			return true;
     		}
     		else if(isOre(stone)){
-    			stone.setType(Material.STONE);
+    			replaceOreToUndergroudBlock(stone);
     			return false;
     		}
     	}
@@ -475,7 +507,7 @@ public class OreReplacerListener implements Listener {
     			return true;
     		}
     		else if(isOre(stone)){
-    			stone.setType(Material.STONE);
+    			replaceOreToUndergroudBlock(stone);
     			return false;
     		}
     	}
