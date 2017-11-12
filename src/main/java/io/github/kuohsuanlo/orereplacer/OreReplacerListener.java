@@ -150,7 +150,7 @@ public class OreReplacerListener implements Listener {
 			    			
 			    		}
 			    		else{
-			    			blockList.get(i).setType(Material.STONE);
+			    			if(isOre(blockAdj)) blockList.get(i).setType(Material.STONE);
 			    		}
 			    	}
     			}	
@@ -378,7 +378,7 @@ public class OreReplacerListener implements Listener {
     			stone.setType(Material.DIAMOND_ORE);
     			return true;
     		}
-    		else if(!stone.getType().equals(Material.STONE)){
+    		else if(isOre(stone)){
     			stone.setType(Material.STONE);
     			return false;
     		}
@@ -394,7 +394,7 @@ public class OreReplacerListener implements Listener {
     			stone.setType(Material.EMERALD_ORE);
     			return true;
     		}
-    		else if(!stone.getType().equals(Material.STONE)){
+    		else if(isOre(stone)){
     			stone.setType(Material.STONE);
     			return false;
     		}
@@ -410,7 +410,7 @@ public class OreReplacerListener implements Listener {
     			stone.setType(Material.LAPIS_ORE);
     			return true;
     		}
-    		else if(!stone.getType().equals(Material.STONE)){
+    		else if(isOre(stone)){
     			stone.setType(Material.STONE);
     			return false;
     		}
@@ -426,7 +426,7 @@ public class OreReplacerListener implements Listener {
     			stone.setType(Material.REDSTONE_ORE);
     			return true;
     		}
-    		else if(!stone.getType().equals(Material.STONE)){
+    		else if(isOre(stone)){
     			stone.setType(Material.STONE);
     			return false;
     		}
@@ -442,7 +442,7 @@ public class OreReplacerListener implements Listener {
     			stone.setType(Material.GOLD_ORE);
     			return true;
     		}
-    		else if(!stone.getType().equals(Material.STONE)){
+    		else if(isOre(stone)){
     			stone.setType(Material.STONE);
     			return false;
     		}
@@ -458,7 +458,7 @@ public class OreReplacerListener implements Listener {
     			stone.setType(Material.IRON_ORE);
     			return true;
     		}
-    		else if(!stone.getType().equals(Material.STONE)){
+    		else if(isOre(stone)){
     			stone.setType(Material.STONE);
     			return false;
     		}
@@ -474,7 +474,7 @@ public class OreReplacerListener implements Listener {
     			stone.setType(Material.COAL_ORE);
     			return true;
     		}
-    		else if(!stone.getType().equals(Material.STONE)){
+    		else if(isOre(stone)){
     			stone.setType(Material.STONE);
     			return false;
     		}
