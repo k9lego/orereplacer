@@ -48,7 +48,7 @@ public class OreReplacerPlugin extends JavaPlugin {
     public double PROBABILITY_REDSTONE = 0.010;
     public double PROBABILITY_EMERALD= 0.0010;
     
-    public double PROBABILITY_INCREASING_CONSTANT= 3;
+    public double PROBABILITY_INCREASING_CONSTANT= 1;
 
 
     public boolean REPLACING_DIAMOND = true;
@@ -83,7 +83,13 @@ public class OreReplacerPlugin extends JavaPlugin {
     public void onReload(){
     	PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(ORListener, this);
-         
+
+    	if (pm.isPluginEnabled("PlaceholderAPI")) {
+         	new AddPlaceholder(this).hook();
+        } else {
+        	throw new RuntimeException("OreReplacerPlugin : "+"Could not find PlaceholderAPI!");
+        }
+    	
         CommandExecutor = new OreReplacerCommand(this);
         getCommand("orereplacer").setExecutor(CommandExecutor);
 
@@ -161,6 +167,7 @@ public class OreReplacerPlugin extends JavaPlugin {
         getLogger().info( pdfFile.getName() + " version " + pdfFile.getVersion() + " is enabled!" );
     }
     private void loadConfig(){
+    	 
     	enabledWorld = new  ArrayList<String> ();
     	String[] world_names = config.getString("ENABLED_WORLD").split(",");
     	for(int i=0;i<world_names.length;i++){
