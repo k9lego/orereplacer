@@ -60,6 +60,13 @@ public class OreReplacerPlugin extends JavaPlugin {
     public boolean REPLACINGY_EMERALD = true;
     
     public boolean REPLACING=true;
+    
+    //TODO:
+    public boolean TEAM_WORK=true;
+    public double TEAM_WORK_RADIUS= 100;
+    public double TEAM_WORK_INCREASING_PER_PLAYER= 0.07;
+    public double TEAM_WORK_INCREASING_MAX= 1;
+
 
     private FileConfiguration config;
     private OreReplacerCommand CommandExecutor ;
@@ -84,11 +91,7 @@ public class OreReplacerPlugin extends JavaPlugin {
     	PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(ORListener, this);
 
-    	if (pm.isPluginEnabled("PlaceholderAPI")) {
-         	new AddPlaceholder(this).hook();
-        } else {
-        	throw new RuntimeException("OreReplacerPlugin : "+"Could not find PlaceholderAPI!");
-        }
+    	
     	
         CommandExecutor = new OreReplacerCommand(this);
         getCommand("orereplacer").setExecutor(CommandExecutor);
@@ -109,6 +112,14 @@ public class OreReplacerPlugin extends JavaPlugin {
         pm.registerEvents(ORListener, this);
         CommandExecutor = new OreReplacerCommand(this);
         getCommand("orereplacer").setExecutor(CommandExecutor);
+        
+        if (pm.isPluginEnabled("PlaceholderAPI")) {
+         	new AddPlaceholder(this).hook();
+         	Bukkit.getServer().getConsoleSender().sendMessage("OreReplacerPlugin : "+"found PlaceholderAPI!");
+         	
+        } else {
+        	throw new RuntimeException("OreReplacerPlugin : "+"Could not find PlaceholderAPI!");
+        }
         
         this.eventLocationListDamaged= new ArrayList<Location>();
         this.eventLocationListMining = new ArrayList<Location>();
