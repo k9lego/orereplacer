@@ -1,10 +1,20 @@
 package io.github.kuohsuanlo.orereplacer;
 
+import java.util.ArrayList;
 import java.util.Random;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+
 public class OreReplacerUtil {
-	private static  Random rand = new Random();
-	private static  int[] res = new int[6];
+	public static Random rand = new Random();
+	public static int[] res = new int[6];
+
+	public static int currentIdxDamage=0;
+	public static int currentIdx=0;
+	
 	public static int[] generateRandomPermutation() {
 	    for (int i = 0; i < 6; i++) {
 	        int d = rand.nextInt(i+1);
@@ -13,4 +23,386 @@ public class OreReplacerUtil {
 	    }
 	    return res;
 	}
+	public static boolean isValidLocationDamaged(Location location){
+		if(location.getBlockY()>70) return false;
+    	for(int i=0;i<OreReplacerPlugin.eventLocationListDamaged.size();i++){
+    		if(OreReplacerPlugin.eventLocationListDamaged.get(i).getWorld().equals(location.getWorld())  &&
+    				OreReplacerPlugin.eventLocationListDamaged.get(i).distance(location)<0.01){
+    			return false;
+    		}
+    	}
+    	
+    	
+    	if(OreReplacerPlugin.eventLocationListDamaged.size()<OreReplacerPlugin.EventLocationListMaxDamaged){
+			OreReplacerPlugin.eventLocationListDamaged.add(location);
+			return true;
+		}
+		else{
+			OreReplacerPlugin.eventLocationListDamaged.set(currentIdxDamage, location);
+			currentIdxDamage++;
+			currentIdxDamage%=OreReplacerPlugin.EventLocationListMaxDamaged;
+			return true;
+		}
+    }
+	public static boolean isValidLocation(Location location){
+		if(location.getBlockY()>70) return false;
+    	for(int i=0;i<OreReplacerPlugin.eventLocationListMining.size();i++){
+    		if(OreReplacerPlugin.eventLocationListMining.get(i).getWorld().equals(location.getWorld())  &&
+    				OreReplacerPlugin.eventLocationListMining.get(i).distance(location)<0.01){
+    			return false;
+    		}
+    	}
+    	
+    	
+    	if(OreReplacerPlugin.eventLocationListMining.size()<OreReplacerPlugin.EventLocationListMaxMining){
+			OreReplacerPlugin.eventLocationListMining.add(location);
+			return true;
+		}
+		else{
+			OreReplacerPlugin.eventLocationListMining.set(currentIdx, location);
+			currentIdx++;
+			currentIdx%=OreReplacerPlugin.EventLocationListMaxMining;
+			return true;
+		}
+    }
+    public static boolean isUndergroundBlock(Block block){
+    	if(OreReplacerPlugin.REPLACING == true){
+        	if( block.getType().equals(Material.STONE) ||
+        		block.getType().equals(Material.DIRT) ||
+        		block.getType().equals(Material.GRAVEL) ){
+        		return true;
+        	}
+    	}
+    	return false;
+    }
+    public static boolean isOre(Block block){
+    	if(OreReplacerPlugin.REPLACING == true){
+        	if( block.getType().equals(Material.DIAMOND_ORE) && OreReplacerPlugin.REPLACING_DIAMOND ||   
+        			block.getType().equals(Material.EMERALD_ORE) && OreReplacerPlugin.REPLACINGY_EMERALD  ||   
+        			block.getType().equals(Material.LAPIS_ORE) && OreReplacerPlugin.REPLACING_LAPIS  ||    
+        			block.getType().equals(Material.REDSTONE_ORE) && OreReplacerPlugin.REPLACING_REDSTONE  ||    
+        			block.getType().equals(Material.GOLD_ORE) && OreReplacerPlugin.REPLACING_GOLD  ||   
+        			block.getType().equals(Material.IRON_ORE) && OreReplacerPlugin.REPLACING_IRON  ||   
+        			block.getType().equals(Material.COAL_ORE) && OreReplacerPlugin.REPLACING_COAL 
+            			){
+            		return true;
+            	}
+    	}
+
+    	return false;
+    }
+    public static void replaceOreToUndergroudBlock(Block block){
+    	if(OreReplacerPlugin.REPLACING == true){
+        	if( block.getType().equals(Material.DIAMOND_ORE) && OreReplacerPlugin.REPLACING_DIAMOND ||   
+        			block.getType().equals(Material.EMERALD_ORE) && OreReplacerPlugin.REPLACINGY_EMERALD  ||   
+        			block.getType().equals(Material.LAPIS_ORE) && OreReplacerPlugin.REPLACING_LAPIS  ||    
+        			block.getType().equals(Material.REDSTONE_ORE) && OreReplacerPlugin.REPLACING_REDSTONE  ||    
+        			block.getType().equals(Material.GOLD_ORE) && OreReplacerPlugin.REPLACING_GOLD  ||   
+        			block.getType().equals(Material.IRON_ORE) && OreReplacerPlugin.REPLACING_IRON  ||   
+        			block.getType().equals(Material.COAL_ORE) && OreReplacerPlugin.REPLACING_COAL 
+            			){
+        		
+        		block.setType(Material.STONE);
+            }
+    	}
+
+    }
+    public static boolean isValidWorld(World world){
+    	for(int i=0;i<OreReplacerPlugin.enabledWorld.size();i++){
+    		if(world.getName().equals(OreReplacerPlugin.enabledWorld.get(i))){
+    			//Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED+"[OreReplacer] : world name : "+world.getName()+" enabled!");
+    			return true;
+    		}
+    		else{
+    			//Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.RED+"[OreReplacer] : world name : "+world.getName()+"/"+OreReplacerPlugin.enabledWorld.get(i));		
+    		}
+    	}
+    	return false;
+    }
+    
+	public static int getOreNumber(Material m){
+		int maxNumber =1;
+		if(m.equals(Material.DIAMOND_ORE)){
+			maxNumber= OreReplacerPlugin.MAX_DIAMOND;
+		}
+		if(m.equals(Material.EMERALD_ORE)){
+			maxNumber= OreReplacerPlugin.MAX_EMERALD;
+		}
+		if(m.equals(Material.LAPIS_ORE)){
+			maxNumber=OreReplacerPlugin.MAX_LAPIS;
+		}
+		if(m.equals(Material.REDSTONE_ORE)){
+			maxNumber= OreReplacerPlugin.MAX_REDSTONE;
+		}
+		if(m.equals(Material.GOLD_ORE)){
+			maxNumber= OreReplacerPlugin.MAX_GOLD;
+		}
+		if(m.equals(Material.IRON_ORE)){
+			maxNumber= OreReplacerPlugin.MAX_IRON;
+		}
+		if(m.equals(Material.COAL_ORE)){
+			maxNumber= OreReplacerPlugin.MAX_COAL;
+		}
+		
+		int oreNumber = (int) Math.round(Math.random()*maxNumber);
+		if(oreNumber==0) oreNumber=1; 
+		
+		return oreNumber;
+	}
+	public static void replaceRemainedOre(Block oriBlock){
+		int oreNumber = getOreNumber(oriBlock.getType())-1;
+		Block block = oriBlock;
+		for(int i=0;i<oreNumber;i++){
+			
+			double x = block.getLocation().getBlockX();
+	    	double y = block.getLocation().getBlockY();
+	    	double z = block.getLocation().getBlockZ();
+			ArrayList<Block> blockList = new ArrayList<Block>();
+	    	
+			
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+1,y,z)));
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x-1,y,z)));
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y+1,z)));
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y-1,z)));
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+1)));
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
+					
+			int[] randIdx = OreReplacerUtil.generateRandomPermutation();
+			
+			/*
+	    	 * All six nearby blocks should be marked as dirty. Otherwise the remaining ores would be removed,
+	    	 * as soon as the first block is break. (Because these is only happening when these nearby blocks have passed the oreExaming.)
+	    	 */
+			
+			// pick one of them as an ore block.
+	    	for(int j=0;j<blockList.size();j++){
+	    		Block blockAdj = blockList.get(randIdx[j]);
+	    		if(isOre(blockAdj)  ||  isUndergroundBlock(blockAdj)){
+	    			if( isCoverByUndergoundBlock(blockAdj) ){  
+		    			blockList.get(randIdx[j]).setType(oriBlock.getType());
+		    			block = blockList.get(randIdx[j]);
+		    			
+		    			//all nearby blocks marked as dirty
+		    			isValidLocation(block.getLocation().add(1,0,0));
+		    			isValidLocation(block.getLocation().add(-1,0,0));
+		    			isValidLocation(block.getLocation().add(0,1,0));
+		    			isValidLocation(block.getLocation().add(0,-1,0));
+		    			isValidLocation(block.getLocation().add(0,0,1));
+		    			isValidLocation(block.getLocation().add(0,0,-1));
+		    			
+	
+		    			isValidLocationDamaged(block.getLocation().add(1,0,0));
+		    			isValidLocationDamaged(block.getLocation().add(-1,0,0));
+		    			isValidLocationDamaged(block.getLocation().add(0,1,0));
+		    			isValidLocationDamaged(block.getLocation().add(0,-1,0));
+		    			isValidLocationDamaged(block.getLocation().add(0,0,1));
+		    			isValidLocationDamaged(block.getLocation().add(0,0,-1));
+		    			
+		    			
+		    			break;
+	    			}
+	    		}
+	    	}
+		}
+	}
+	public static void replaceFirstOre(Block block){
+    	double x = block.getLocation().getBlockX();
+    	double y = block.getLocation().getBlockY();
+    	double z = block.getLocation().getBlockZ();
+    	ArrayList<Block> blockList = new ArrayList<Block>();
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+1,y,z)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x-1,y,z)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y+1,z)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y-1,z)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+1)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
+    	
+    	/*
+    	 * All six nearby blocks should be marked as dirty. Otherwise the remaining ores would be removed,
+    	 * as soon as the first block is break.  (only if it's an ore block)
+    	 */
+    	for(int i=0;i<blockList.size();i++){
+    		if(isOre(blockList.get(i))  ||  isUndergroundBlock(blockList.get(i))){
+    			if( isCoverByUndergoundBlock(blockList.get(i)) ){  
+	    		
+	    			boolean isReplacedByOre = false;
+					if(isDiamond(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					else if(isEmerald(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					else if(isLapis(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					else if(isGold(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					else if(isRedStone(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					else if(isIron(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					else if(isCoal(blockList.get(i))){
+						isReplacedByOre = true;
+					}
+					
+					if(isReplacedByOre){
+						if(isValidLocation(blockList.get(i).getLocation()))
+							replaceRemainedOre(blockList.get(i));
+					}
+    			}
+    		}
+    	}
+    }
+
+    public static boolean isCoverByUndergoundBlock(Block block){
+    	double x = block.getLocation().getBlockX();
+    	double y = block.getLocation().getBlockY();
+    	double z = block.getLocation().getBlockZ();
+    	ArrayList<Block> blockList = new ArrayList<Block>();
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+1,y,z)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x-1,y,z)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y+1,z)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y-1,z)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+1)));
+    	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
+    	
+    	for(int i=0;i<blockList.size();i++){
+    		if(	blockList.get(i).getType().equals(Material.STONE)  ||  
+    			blockList.get(i).getType().equals(Material.GRAVEL)  ||  
+    			blockList.get(i).getType().equals(Material.DIRT)  ||  
+    			blockList.get(i).getType().equals(Material.STATIONARY_LAVA)  ||
+    			blockList.get(i).getType().equals(Material.BEDROCK)    ||
+    			blockList.get(i).getType().equals(Material.COAL_ORE)    ||
+    			blockList.get(i).getType().equals(Material.IRON_ORE)    ||
+    			blockList.get(i).getType().equals(Material.GOLD_ORE)    ||
+    			blockList.get(i).getType().equals(Material.DIAMOND_ORE)    ||
+    			blockList.get(i).getType().equals(Material.EMERALD_ORE)    ||
+    			blockList.get(i).getType().equals(Material.REDSTONE_ORE)    ||
+    			blockList.get(i).getType().equals(Material.LAPIS_ORE)    ||
+    			blockList.get(i).getType().equals(Material.CLAY)       
+    			){
+    			
+    		}
+    		else{
+    			return false;
+    		}
+    	}
+    	
+    	return true;
+    }
+    public static boolean isDiamond(Block stone){
+    	double max_y = 15;
+    	double min_y = 0;
+    	if(!OreReplacerPlugin.REPLACING_DIAMOND) return false;
+    	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
+    		if(Math.random()<=OreReplacerPlugin.PROBABILITY_DIAMOND){
+    			stone.setType(Material.DIAMOND_ORE);
+    			return true;
+    		}
+    		else if(isOre(stone)){
+    			replaceOreToUndergroudBlock(stone);
+    			return false;
+    		}
+    	}
+    	return false;
+    }
+    public static boolean isEmerald(Block stone){
+    	double max_y = 15;
+    	double min_y = 0;
+    	if(!OreReplacerPlugin.REPLACINGY_EMERALD) return false;
+    	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
+    		if(Math.random()<=OreReplacerPlugin.PROBABILITY_EMERALD){
+    			stone.setType(Material.EMERALD_ORE);
+    			return true;
+    		}
+    		else if(isOre(stone)){
+    			replaceOreToUndergroudBlock(stone);
+    			return false;
+    		}
+    	}
+    	return false;
+    }
+    public static boolean isLapis(Block stone){
+    	double max_y = 30;
+    	double min_y = 0;
+    	if(!OreReplacerPlugin.REPLACING_LAPIS) return false;
+    	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
+    		if(Math.random()<=OreReplacerPlugin.PROBABILITY_LAPIS){
+    			stone.setType(Material.LAPIS_ORE);
+    			return true;
+    		}
+    		else if(isOre(stone)){
+    			replaceOreToUndergroudBlock(stone);
+    			return false;
+    		}
+    	}
+    	return false;
+    }
+    public static boolean isRedStone(Block stone){
+    	double max_y = 15;
+    	double min_y = 0;
+    	if(!OreReplacerPlugin.REPLACING_REDSTONE) return false;
+    	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
+    		if(Math.random()<=OreReplacerPlugin.PROBABILITY_REDSTONE){
+    			stone.setType(Material.REDSTONE_ORE);
+    			return true;
+    		}
+    		else if(isOre(stone)){
+    			replaceOreToUndergroudBlock(stone);
+    			return false;
+    		}
+    	}
+    	return false;
+    }
+    public static boolean isGold(Block stone){
+    	double max_y = 30;
+    	double min_y = 0;
+    	if(!OreReplacerPlugin.REPLACING_GOLD) return false;
+    	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
+    		if(Math.random()<=OreReplacerPlugin.PROBABILITY_GOLD){
+    			stone.setType(Material.GOLD_ORE);
+    			return true;
+    		}
+    		else if(isOre(stone)){
+    			replaceOreToUndergroudBlock(stone);
+    			return false;
+    		}
+    	}
+    	return false;
+    }
+    public static boolean isIron(Block stone){
+    	double max_y = 60;
+    	double min_y = 0;
+    	if(!OreReplacerPlugin.REPLACING_IRON) return false;
+    	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
+    		if(Math.random()<=OreReplacerPlugin.PROBABILITY_IRON){
+    			stone.setType(Material.IRON_ORE);
+    			return true;
+    		}
+    		else if(isOre(stone)){
+    			replaceOreToUndergroudBlock(stone);
+    			return false;
+    		}
+    	}
+    	return false;
+    }
+    public static boolean isCoal(Block stone){
+    	double max_y = 70;
+    	double min_y = 0;
+    	if(!OreReplacerPlugin.REPLACING_COAL) return false;
+    	if(stone.getLocation().getBlockY()>min_y &&  stone.getLocation().getBlockY()<max_y){
+    		if(Math.random()<=OreReplacerPlugin.PROBABILITY_COAL){
+    			stone.setType(Material.COAL_ORE);
+    			return true;
+    		}
+    		else if(isOre(stone)){
+    			replaceOreToUndergroudBlock(stone);
+    			return false;
+    		}
+    	}
+    	return false;
+    }
 }

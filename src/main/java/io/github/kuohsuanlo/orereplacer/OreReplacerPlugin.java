@@ -21,45 +21,45 @@ import org.bukkit.plugin.java.JavaPlugin;
 import net.md_5.bungee.api.ChatColor;
 
 public class OreReplacerPlugin extends JavaPlugin {
-    private final OreReplacerListener ORListener = new OreReplacerListener(this);
+    private final OreReplacerListener ORListener = new OreReplacerListener();
     private static final Logger log = Logger.getLogger("Minecraft");
 
-    public int MAX_DIAMOND = 6;
-    public int MAX_GOLD = 6;
-    public int MAX_IRON = 10;
-    public int MAX_COAL = 10;
-    public int MAX_LAPIS = 4;
-    public int MAX_REDSTONE = 10;
-    public int MAX_EMERALD= 4;
+    public static int MAX_DIAMOND = 6;
+    public static int MAX_GOLD = 6;
+    public static int MAX_IRON = 10;
+    public static int MAX_COAL = 10;
+    public static int MAX_LAPIS = 4;
+    public static int MAX_REDSTONE = 10;
+    public static int MAX_EMERALD= 4;
     
-    public int MIN_DIAMOND = 2;
-    public int MIN_GOLD = 3;
-    public int MIN_IRON = 4;
-    public int MIN_COAL = 3;
-    public int MIN_LAPIS = 2;
-    public int MIN_REDSTONE = 4;
-    public int MIN_EMERALD= 2;
+    public static int MIN_DIAMOND = 2;
+    public static int MIN_GOLD = 3;
+    public static int MIN_IRON = 4;
+    public static int MIN_COAL = 3;
+    public static int MIN_LAPIS = 2;
+    public static int MIN_REDSTONE = 4;
+    public static int MIN_EMERALD= 2;
     
-    public double PROBABILITY_DIAMOND = 0.0012;
-    public double PROBABILITY_GOLD = 0.0036;
-    public double PROBABILITY_IRON = 0.0016;
-    public double PROBABILITY_COAL = 0.0018;
-    public double PROBABILITY_LAPIS = 0.0012;
-    public double PROBABILITY_REDSTONE = 0.010;
-    public double PROBABILITY_EMERALD= 0.0010;
+    public static double PROBABILITY_DIAMOND = 0.0012;
+    public static double PROBABILITY_GOLD = 0.0036;
+    public static double PROBABILITY_IRON = 0.0016;
+    public static double PROBABILITY_COAL = 0.0018;
+    public static double PROBABILITY_LAPIS = 0.0012;
+    public static double PROBABILITY_REDSTONE = 0.010;
+    public static double PROBABILITY_EMERALD= 0.0010;
     
-    public double PROBABILITY_INCREASING_CONSTANT= 1;
+    public static double PROBABILITY_INCREASING_CONSTANT= 1;
 
 
-    public boolean REPLACING_DIAMOND = true;
-    public boolean REPLACING_GOLD = true;
-    public boolean REPLACING_IRON = true;
-    public boolean REPLACING_COAL = true;
-    public boolean REPLACING_LAPIS = true;
-    public boolean REPLACING_REDSTONE = true;
-    public boolean REPLACINGY_EMERALD = true;
+    public static boolean REPLACING_DIAMOND = true;
+    public static boolean REPLACING_GOLD = true;
+    public static boolean REPLACING_IRON = true;
+    public static boolean REPLACING_COAL = true;
+    public static boolean REPLACING_LAPIS = true;
+    public static boolean REPLACING_REDSTONE = true;
+    public static boolean REPLACINGY_EMERALD = true;
     
-    public boolean REPLACING=true;
+    public static boolean REPLACING=true;
     
     //TODO:
     public boolean TEAM_WORK=true;
@@ -72,12 +72,12 @@ public class OreReplacerPlugin extends JavaPlugin {
     private OreReplacerCommand CommandExecutor ;
 
 
-    public ArrayList<Location> eventLocationListDamaged;
-    public static final int EventLocationListMaxDamaged = 200;
+    public static ArrayList<Location> eventLocationListDamaged;
+    public static final int EventLocationListMaxDamaged = 500;
     
-    public ArrayList<Location> eventLocationListMining;
-    public static final int EventLocationListMaxMining = 200;
-    public ArrayList<String> enabledWorld;
+    public static ArrayList<Location> eventLocationListMining;
+    public static final int EventLocationListMaxMining = 500;
+    public static ArrayList<String> enabledWorld  = new  ArrayList<String> ();
     
     
     @Override
@@ -118,7 +118,7 @@ public class OreReplacerPlugin extends JavaPlugin {
          	Bukkit.getServer().getConsoleSender().sendMessage("OreReplacerPlugin : "+"found PlaceholderAPI!");
          	
         } else {
-        	throw new RuntimeException("OreReplacerPlugin : "+"Could not find PlaceholderAPI!");
+        	//throw new RuntimeException("OreReplacerPlugin : "+"Could not find PlaceholderAPI!");
         }
         
         this.eventLocationListDamaged= new ArrayList<Location>();

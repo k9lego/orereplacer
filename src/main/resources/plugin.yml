@@ -1,6 +1,7 @@
 name: OreReplacerPlugin
 main: io.github.kuohsuanlo.orereplacer.OreReplacerPlugin
 version: ${version}
+soft-depend: [PlaceholderAPI]
 commands:
   orereplacer:
     description: .
