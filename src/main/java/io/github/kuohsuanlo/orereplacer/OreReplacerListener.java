@@ -28,51 +28,7 @@ import net.md_5.bungee.api.ChatColor;
 
 public class OreReplacerListener implements Listener {
 
-	
-    /*
-     * Hiding next revealing blocks, avoiding making player seeing their ores got replaced. 
-     */
-	/*
-    @EventHandler
-    public void onBlockDamageEvent(BlockDamageEvent event) {
-    	
-    	Block block = event.getBlock();
-    	if(block==null) return;
-    	
-    	if(!OreReplacerUtil.isOre(block)  &&  !OreReplacerUtil.isUndergroundBlock(block)) return;
-    	if(!OreReplacerUtil.isValidWorld(block.getWorld())) return;
-    	if(!OreReplacerUtil.isValidLocationDamaged(block.getLocation())) return;
-
-    	double x = block.getLocation().getBlockX();
-    	double y = block.getLocation().getBlockY();
-    	double z = block.getLocation().getBlockZ();
-		ArrayList<Block> blockList = new ArrayList<Block>();
-    	
-		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+1,y,z)));
-		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x-1,y,z)));
-		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y+1,z)));
-		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y-1,z)));
-		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+1)));
-		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
-		
-		for(int i=0;i<blockList.size();i++){
-			Block blockAdj = blockList.get(i);
-    		if(OreReplacerUtil.isOre(blockAdj)  ||  OreReplacerUtil.isUndergroundBlock(blockAdj)){
-    			if( OreReplacerUtil.isCoverByUndergoundBlock(blockAdj) ){  
-					for(int j=0;j<orplugin.eventLocationListDamaged.size();j++){
-			    		if(orplugin.eventLocationListDamaged.get(j).getWorld().equals(blockList.get(i).getWorld())  &&
-		    				orplugin.eventLocationListDamaged.get(j).distance(blockList.get(i).getLocation())<0.01){
-			    			
-			    		}
-			    		else if(OreReplacerUtil.isOre(blockAdj)) {
-			    				OreReplacerUtil.replaceOreToUndergroudBlock(blockList.get(i));
-			    		}
-			    	}
-    			}	
-			}
-		}
-    }*/
-	 @EventHandler
+	@EventHandler
     public void onBlockDamageEvent(BlockDamageEvent event) {
 		Block block = event.getBlock();
 			
@@ -81,9 +37,9 @@ public class OreReplacerListener implements Listener {
 			return;
 		}
 		
-		if( OreReplacerUtil.isValidLocation(block.getLocation()) ){
-			OreReplacerUtil.replaceFirstOre(block);
-		}
+		//if( OreReplacerUtil.isValidLocation(block.getLocation()) ){
+			OreReplacerUtil.hideOre(block,2);
+		//}
 	}
 	
     @EventHandler
@@ -95,7 +51,7 @@ public class OreReplacerListener implements Listener {
 			Block block = blocks.get(i);
 			if(!OreReplacerUtil.isOre(block)  &&  !OreReplacerUtil.isUndergroundBlock(block)) return;
 			if(!OreReplacerUtil.isValidWorld(block.getWorld())) return;
-			if( OreReplacerUtil.isValidLocation(block.getLocation()) ){
+			if( OreReplacerUtil.attemptAddingValidLocation(block.getLocation()) ){
 				OreReplacerUtil.replaceFirstOre(block);
 			}
 		}
@@ -109,7 +65,7 @@ public class OreReplacerListener implements Listener {
 			Block block = blocks.get(i);
 			if(!OreReplacerUtil.isOre(block)  &&  !OreReplacerUtil.isUndergroundBlock(block)) return;
 			if(!OreReplacerUtil.isValidWorld(block.getWorld())) return;
-			if( OreReplacerUtil.isValidLocation(block.getLocation()) ){
+			if( OreReplacerUtil.attemptAddingValidLocation(block.getLocation()) ){
 				OreReplacerUtil.replaceFirstOre(block);
 			}
 		}
@@ -124,7 +80,7 @@ public class OreReplacerListener implements Listener {
 			return;
 		}
 		
-		if( OreReplacerUtil.isValidLocation(block.getLocation()) ){
+		if( OreReplacerUtil.attemptAddingValidLocation(block.getLocation()) ){
 			OreReplacerUtil.replaceFirstOre(block);
 		}
     }
@@ -133,7 +89,7 @@ public class OreReplacerListener implements Listener {
 		Block block = event.getBlock();
 		if(!OreReplacerUtil.isOre(block)  &&  !OreReplacerUtil.isUndergroundBlock(block)) return;
 		if(!OreReplacerUtil.isValidWorld(block.getWorld())) return;
-		if( OreReplacerUtil.isValidLocation(block.getLocation()) ){
+		if( OreReplacerUtil.attemptAddingValidLocation(block.getLocation()) ){
 			OreReplacerUtil.replaceFirstOre(block);
 		}
     }

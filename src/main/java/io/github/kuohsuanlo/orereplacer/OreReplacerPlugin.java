@@ -71,12 +71,8 @@ public class OreReplacerPlugin extends JavaPlugin {
     private FileConfiguration config;
     private OreReplacerCommand CommandExecutor ;
 
-
-    public static ArrayList<Location> eventLocationListDamaged;
-    public static final int EventLocationListMaxDamaged = 500;
-    
     public static ArrayList<Location> eventLocationListMining;
-    public static final int EventLocationListMaxMining = 500;
+    public static final int EventLocationListMaxMining = 1000;
     public static ArrayList<String> enabledWorld  = new  ArrayList<String> ();
     
     
@@ -121,8 +117,7 @@ public class OreReplacerPlugin extends JavaPlugin {
         	//throw new RuntimeException("OreReplacerPlugin : "+"Could not find PlaceholderAPI!");
         }
         
-        this.eventLocationListDamaged= new ArrayList<Location>();
-        this.eventLocationListMining = new ArrayList<Location>();
+        OreReplacerPlugin.eventLocationListMining = new ArrayList<Location>();
         
     	config = getConfig();
     	config.addDefault("version","1.0.0");

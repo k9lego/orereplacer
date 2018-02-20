@@ -23,28 +23,20 @@ public class OreReplacerUtil {
 	    }
 	    return res;
 	}
-	public static boolean isValidLocationDamaged(Location location){
+
+	public static boolean isValidLocation(Location location){
 		if(location.getBlockY()>70) return false;
-    	for(int i=0;i<OreReplacerPlugin.eventLocationListDamaged.size();i++){
-    		if(OreReplacerPlugin.eventLocationListDamaged.get(i).getWorld().equals(location.getWorld())  &&
-    				OreReplacerPlugin.eventLocationListDamaged.get(i).distance(location)<0.01){
+    	for(int i=0;i<OreReplacerPlugin.eventLocationListMining.size();i++){
+    		if(OreReplacerPlugin.eventLocationListMining.get(i).getWorld().equals(location.getWorld())  &&
+    				OreReplacerPlugin.eventLocationListMining.get(i).distance(location)<0.01){
     			return false;
     		}
     	}
     	
     	
-    	if(OreReplacerPlugin.eventLocationListDamaged.size()<OreReplacerPlugin.EventLocationListMaxDamaged){
-			OreReplacerPlugin.eventLocationListDamaged.add(location);
-			return true;
-		}
-		else{
-			OreReplacerPlugin.eventLocationListDamaged.set(currentIdxDamage, location);
-			currentIdxDamage++;
-			currentIdxDamage%=OreReplacerPlugin.EventLocationListMaxDamaged;
-			return true;
-		}
+		return true;
     }
-	public static boolean isValidLocation(Location location){
+	public static boolean attemptAddingValidLocation(Location location){
 		if(location.getBlockY()>70) return false;
     	for(int i=0;i<OreReplacerPlugin.eventLocationListMining.size();i++){
     		if(OreReplacerPlugin.eventLocationListMining.get(i).getWorld().equals(location.getWorld())  &&
@@ -183,28 +175,50 @@ public class OreReplacerUtil {
 		    			block = blockList.get(randIdx[j]);
 		    			
 		    			//all nearby blocks marked as dirty
-		    			isValidLocation(block.getLocation().add(1,0,0));
-		    			isValidLocation(block.getLocation().add(-1,0,0));
-		    			isValidLocation(block.getLocation().add(0,1,0));
-		    			isValidLocation(block.getLocation().add(0,-1,0));
-		    			isValidLocation(block.getLocation().add(0,0,1));
-		    			isValidLocation(block.getLocation().add(0,0,-1));
+		    			attemptAddingValidLocation(block.getLocation().add(1,0,0));
+		    			attemptAddingValidLocation(block.getLocation().add(-1,0,0));
+		    			attemptAddingValidLocation(block.getLocation().add(0,1,0));
+		    			attemptAddingValidLocation(block.getLocation().add(0,-1,0));
+		    			attemptAddingValidLocation(block.getLocation().add(0,0,1));
+		    			attemptAddingValidLocation(block.getLocation().add(0,0,-1));
 		    			
 	
-		    			isValidLocationDamaged(block.getLocation().add(1,0,0));
-		    			isValidLocationDamaged(block.getLocation().add(-1,0,0));
-		    			isValidLocationDamaged(block.getLocation().add(0,1,0));
-		    			isValidLocationDamaged(block.getLocation().add(0,-1,0));
-		    			isValidLocationDamaged(block.getLocation().add(0,0,1));
-		    			isValidLocationDamaged(block.getLocation().add(0,0,-1));
-		    			
-		    			
+
 		    			break;
 	    			}
 	    		}
 	    	}
 		}
 	}
+	public static void hideOre(Block block,int radius){
+    	double x = block.getLocation().getBlockX();
+    	double y = block.getLocation().getBlockY();
+    	double z = block.getLocation().getBlockZ();
+    	ArrayList<Block> blockList = new ArrayList<Block>();
+    	for(int dx=-radius;dx<=radius;dx++){
+    		for(int dy=-radius;dy<=radius;dy++){
+    			for(int dz=-radius;dz<=radius;dz++){
+    				blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+dx,y+dy,z+dz)));
+            		
+            	}
+        		
+        	}
+    		
+    	}    	
+    	/*
+    	 * All six nearby blocks should be marked as dirty. Otherwise the remaining ores would be removed,
+    	 * as soon as the first block is break.  (only if it's an ore block)
+    	 */
+    	for(int i=0;i<blockList.size();i++){
+    		if(isOre(blockList.get(i))  ||  isUndergroundBlock(blockList.get(i))){
+    			if( isCoverByUndergoundBlock(blockList.get(i)) ){  
+    				
+    				if(isValidLocation(blockList.get(i).getLocation()))
+    					blockList.get(i).setType(Material.STONE);
+    			}
+    		}
+    	}
+    }
 	public static void replaceFirstOre(Block block){
     	double x = block.getLocation().getBlockX();
     	double y = block.getLocation().getBlockY();
@@ -249,7 +263,7 @@ public class OreReplacerUtil {
 					}
 					
 					if(isReplacedByOre){
-						if(isValidLocation(blockList.get(i).getLocation()))
+						if(attemptAddingValidLocation(blockList.get(i).getLocation()))
 							replaceRemainedOre(blockList.get(i));
 					}
     			}
