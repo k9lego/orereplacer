@@ -190,6 +190,31 @@ public class OreReplacerUtil {
 	    	}
 		}
 	}
+	
+	
+	public static void hideAll(Block block,int radius){
+    	int x = block.getLocation().getBlockX();
+    	int y = block.getLocation().getBlockY();
+    	int z = block.getLocation().getBlockZ();
+    	for(int dx=-radius;dx<=radius;dx++){
+    		for(int dy=-radius;dy<=radius;dy++){
+    			for(int dz=-radius;dz<=radius;dz++){
+					
+    				Block tmpBlock = block.getWorld().getBlockAt(x+dx, y+dy, z+dz);
+    				
+					if(OreReplacerUtil.isOre(tmpBlock)){
+						block.setType(Material.STONE);
+						
+					} 
+            	}
+        		
+        	}
+    		
+    	}    	
+    	
+    }
+	
+	
 	public static void hideOre(Block block,int radius){
     	double x = block.getLocation().getBlockX();
     	double y = block.getLocation().getBlockY();
@@ -198,8 +223,9 @@ public class OreReplacerUtil {
     	for(int dx=-radius;dx<=radius;dx++){
     		for(int dy=-radius;dy<=radius;dy++){
     			for(int dz=-radius;dz<=radius;dz++){
-    				blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+dx,y+dy,z+dz)));
-            		
+					blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+dx,y+dy,z+dz)));
+    				
+    				
             	}
         		
         	}
@@ -213,8 +239,9 @@ public class OreReplacerUtil {
     		if(isOre(blockList.get(i))  ||  isUndergroundBlock(blockList.get(i))){
     			if( isCoverByUndergoundBlock(blockList.get(i)) ){  
     				
-    				if(isValidLocation(blockList.get(i).getLocation()))
+    				if(isValidLocation(blockList.get(i).getLocation())){
     					blockList.get(i).setType(Material.STONE);
+    				}
     			}
     		}
     	}
