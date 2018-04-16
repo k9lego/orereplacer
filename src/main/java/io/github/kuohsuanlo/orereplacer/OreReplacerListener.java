@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -56,6 +57,7 @@ public class OreReplacerListener implements Listener {
 			}
 		}
     }
+    
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onBlockPistonRetractEvent(BlockPistonRetractEvent event) {
     	if(event.getBlocks()==null) return;
@@ -71,6 +73,7 @@ public class OreReplacerListener implements Listener {
 		}
 		
     }
+    
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onBlockBreakEvent(BlockBreakEvent event) {
 		Block block = event.getBlock();
@@ -84,27 +87,28 @@ public class OreReplacerListener implements Listener {
 			OreReplacerUtil.replaceFirstOre(block);
 		}
     }
+    
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onBlockExplodeEvent(BlockExplodeEvent event) {
     	Block block = event.getBlock();
 		
-		if(!OreReplacerUtil.isOre(block)  &&  !OreReplacerUtil.isUndergroundBlock(block)) return;
+		//if(!OreReplacerUtil.isOre(block)  &&  !OreReplacerUtil.isUndergroundBlock(block)) return;
 		if(!OreReplacerUtil.isValidWorld(block.getWorld())) {
 			return;
 		}
 				
-		OreReplacerUtil.hideOre(block,2);
+		OreReplacerUtil.hideOre(block,1);
     }
     
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onEntityExplodeEvent(EntityExplodeEvent event) {
     	for(Block block :  event.blockList()){
-    		if(!OreReplacerUtil.isOre(block)  &&  !OreReplacerUtil.isUndergroundBlock(block)) return;
+    		//if(!OreReplacerUtil.isOre(block)  &&  !OreReplacerUtil.isUndergroundBlock(block)) return;
     		if(!OreReplacerUtil.isValidWorld(block.getWorld())) {
     			return;
     		}
-    				
-    		OreReplacerUtil.hideOre(block,2);
+    		
+    		OreReplacerUtil.hideOre(block,1);
     		
     	}
 		
