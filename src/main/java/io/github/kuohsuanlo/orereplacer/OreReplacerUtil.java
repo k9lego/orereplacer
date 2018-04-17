@@ -114,81 +114,79 @@ public class OreReplacerUtil {
     
 	public static int getOreNumber(Material m){
 		int maxNumber =1;
+		int minNumber = 1;
 		if(m.equals(Material.DIAMOND_ORE)){
 			maxNumber= OreReplacerPlugin.MAX_DIAMOND;
+			minNumber= OreReplacerPlugin.MIN_DIAMOND;
 		}
 		if(m.equals(Material.EMERALD_ORE)){
 			maxNumber= OreReplacerPlugin.MAX_EMERALD;
+			minNumber= OreReplacerPlugin.MIN_EMERALD;
 		}
 		if(m.equals(Material.LAPIS_ORE)){
 			maxNumber=OreReplacerPlugin.MAX_LAPIS;
+			minNumber=OreReplacerPlugin.MIN_LAPIS;
 		}
 		if(m.equals(Material.REDSTONE_ORE)){
 			maxNumber= OreReplacerPlugin.MAX_REDSTONE;
+			minNumber= OreReplacerPlugin.MIN_REDSTONE;
 		}
 		if(m.equals(Material.GOLD_ORE)){
 			maxNumber= OreReplacerPlugin.MAX_GOLD;
+			minNumber= OreReplacerPlugin.MIN_GOLD;
 		}
 		if(m.equals(Material.IRON_ORE)){
 			maxNumber= OreReplacerPlugin.MAX_IRON;
+			minNumber= OreReplacerPlugin.MIN_IRON;
 		}
 		if(m.equals(Material.COAL_ORE)){
 			maxNumber= OreReplacerPlugin.MAX_COAL;
+			minNumber= OreReplacerPlugin.MIN_COAL;
 		}
 		
-		int oreNumber = (int) Math.round(Math.random()*maxNumber);
+		int oreNumber = (int) Math.round(Math.random()*(maxNumber-minNumber))+minNumber;
 		if(oreNumber==0) oreNumber=1; 
 		
 		return oreNumber;
 	}
 	public static void replaceRemainedOre(Block oriBlock){
 		int oreNumber = getOreNumber(oriBlock.getType())-1;
-		Block block = oriBlock;
-		for(int i=0;i<oreNumber;i++){
-			
-			double x = block.getLocation().getBlockX();
-	    	double y = block.getLocation().getBlockY();
-	    	double z = block.getLocation().getBlockZ();
-			ArrayList<Block> blockList = new ArrayList<Block>();
-	    	
-			
-			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+1,y,z)));
-			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x-1,y,z)));
-			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y+1,z)));
-			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y-1,z)));
-			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+1)));
-			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
-					
-			int[] randIdx = OreReplacerUtil.generateRandomPermutation();
-			
-			/*
-	    	 * All six nearby blocks should be marked as dirty. Otherwise the remaining ores would be removed,
-	    	 * as soon as the first block is break. (Because these is only happening when these nearby blocks have passed the oreExaming.)
-	    	 */
-			
-			// pick one of them as an ore block.
-	    	for(int j=0;j<blockList.size();j++){
-	    		Block blockAdj = blockList.get(randIdx[j]);
-	    		if(isOre(blockAdj)  ||  isUndergroundBlock(blockAdj)){
-	    			if( isCoverByUndergoundBlock(blockAdj) ){  
-		    			blockList.get(randIdx[j]).setType(oriBlock.getType());
-		    			block = blockList.get(randIdx[j]);
-		    			
-		    			//all nearby blocks marked as dirty
-		    			attemptAddingValidLocation(block.getLocation().add(1,0,0));
-		    			attemptAddingValidLocation(block.getLocation().add(-1,0,0));
-		    			attemptAddingValidLocation(block.getLocation().add(0,1,0));
-		    			attemptAddingValidLocation(block.getLocation().add(0,-1,0));
-		    			attemptAddingValidLocation(block.getLocation().add(0,0,1));
-		    			attemptAddingValidLocation(block.getLocation().add(0,0,-1));
-		    			
-	
-
-		    			break;
-	    			}
-	    		}
-	    	}
+		findOreCandidates(oriBlock,oreNumber);
+	}
+	private static void findOreCandidates(Block oriBlock, int remainedOre){
+		if(remainedOre==0){
+			return;
 		}
+		else{
+			double x = oriBlock.getLocation().getBlockX();
+	    	double y = oriBlock.getLocation().getBlockY();
+	    	double z = oriBlock.getLocation().getBlockZ();
+	    	ArrayList<Block> blockList = new ArrayList<Block>();
+	    	blockList.add(oriBlock.getWorld().getBlockAt(new Location(oriBlock.getWorld(),x+1,y,z)));
+			blockList.add(oriBlock.getWorld().getBlockAt(new Location(oriBlock.getWorld(),x-1,y,z)));
+			blockList.add(oriBlock.getWorld().getBlockAt(new Location(oriBlock.getWorld(),x,y+1,z)));
+			blockList.add(oriBlock.getWorld().getBlockAt(new Location(oriBlock.getWorld(),x,y-1,z)));
+			blockList.add(oriBlock.getWorld().getBlockAt(new Location(oriBlock.getWorld(),x,y,z+1)));
+			blockList.add(oriBlock.getWorld().getBlockAt(new Location(oriBlock.getWorld(),x,y,z-1)));
+			int[] randIdx = OreReplacerUtil.generateRandomPermutation();
+			for(int j=0;j<blockList.size();j++){
+	    		Block blockAdj = blockList.get(randIdx[j]);
+	    		if(isOre(blockAdj)  ||  isUndergroundBlock(blockAdj)  &&  isCoverByUndergoundBlock(blockAdj) ){  
+	    				blockAdj.setType(oriBlock.getType());
+		    			attemptAddingValidLocation(blockAdj.getLocation().add(1,0,0));
+		    			attemptAddingValidLocation(blockAdj.getLocation().add(-1,0,0));
+		    			attemptAddingValidLocation(blockAdj.getLocation().add(0,1,0));
+		    			attemptAddingValidLocation(blockAdj.getLocation().add(0,-1,0));
+		    			attemptAddingValidLocation(blockAdj.getLocation().add(0,0,1));
+		    			attemptAddingValidLocation(blockAdj.getLocation().add(0,0,-1));
+	    				findOreCandidates(blockAdj,remainedOre-1);
+		    			break;
+    			}
+    		}
+	    	
+		}
+			
+		
 	}
 	
 	

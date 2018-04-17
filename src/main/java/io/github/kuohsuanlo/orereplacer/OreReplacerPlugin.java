@@ -189,6 +189,14 @@ public class OreReplacerPlugin extends JavaPlugin {
      	PROBABILITY_REDSTONE = config.getDouble("PROBABILITY_REDSTONE");
      	PROBABILITY_EMERALD = config.getDouble("PROBABILITY_EMERALD");
 
+     	MIN_DIAMOND = config.getInt("MIN_DIAMOND");
+     	MIN_GOLD = config.getInt("MIN_GOLD");
+     	MIN_IRON = config.getInt("MIN_IRON");
+     	MIN_COAL = config.getInt("MIN_COAL");
+     	MIN_LAPIS = config.getInt("MIN_LAPIS");
+     	MIN_REDSTONE = config.getInt("MIN_REDSTONE");
+     	MIN_EMERALD = config.getInt("MIN_EMERALD");
+     	
      	MAX_DIAMOND = config.getInt("MAX_DIAMOND");
      	MAX_GOLD = config.getInt("MAX_GOLD");
      	MAX_IRON = config.getInt("MAX_IRON");
