@@ -40,13 +40,13 @@ public class OreReplacerPlugin extends JavaPlugin {
     public static int MIN_REDSTONE = 4;
     public static int MIN_EMERALD= 2;
     
-    public static double PROBABILITY_DIAMOND = 0.0012;
-    public static double PROBABILITY_GOLD = 0.0036;
-    public static double PROBABILITY_IRON = 0.0016;
-    public static double PROBABILITY_COAL = 0.0018;
+    public static double PROBABILITY_DIAMOND = 0.0015;
+    public static double PROBABILITY_GOLD = 0.003;
+    public static double PROBABILITY_IRON = 0.008;
+    public static double PROBABILITY_COAL = 0.0015;
     public static double PROBABILITY_LAPIS = 0.0012;
     public static double PROBABILITY_REDSTONE = 0.010;
-    public static double PROBABILITY_EMERALD= 0.0010;
+    public static double PROBABILITY_EMERALD= 0.0008;
     
     public static double PROBABILITY_INCREASING_CONSTANT= 1;
 
