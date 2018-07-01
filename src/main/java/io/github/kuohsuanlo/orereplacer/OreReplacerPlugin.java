@@ -72,7 +72,7 @@ public class OreReplacerPlugin extends JavaPlugin {
     private OreReplacerCommand CommandExecutor ;
 
     public static ArrayList<Location> eventLocationListMining;
-    public static final int EventLocationListMaxMining = 1000;
+    public static final int EventLocationListMaxMining = 800;
     public static ArrayList<String> enabledWorld  = new  ArrayList<String> ();
     
     

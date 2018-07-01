@@ -27,7 +27,7 @@ public class OreReplacerUtil {
 	public static boolean isValidLocation(Location location){
 		if(location.getBlockY()>70) return false;
     	for(int i=0;i<OreReplacerPlugin.eventLocationListMining.size();i++){
-    		if(OreReplacerPlugin.eventLocationListMining.get(i).getWorld().equals(location.getWorld())  &&
+    		if(OreReplacerPlugin.eventLocationListMining.get(i).getWorld().getName().equals(location.getWorld().getName())  &&
     				OreReplacerPlugin.eventLocationListMining.get(i).distance(location)<0.01){
     			return false;
     		}
@@ -39,7 +39,7 @@ public class OreReplacerUtil {
 	public static boolean attemptAddingValidLocation(Location location){
 		if(location.getBlockY()>70) return false;
     	for(int i=0;i<OreReplacerPlugin.eventLocationListMining.size();i++){
-    		if(OreReplacerPlugin.eventLocationListMining.get(i).getWorld().equals(location.getWorld())  &&
+    		if(OreReplacerPlugin.eventLocationListMining.get(i).getWorld().getName().equals(location.getWorld().getName())  &&
     				OreReplacerPlugin.eventLocationListMining.get(i).distance(location)<0.01){
     			return false;
     		}
