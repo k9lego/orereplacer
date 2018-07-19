@@ -59,8 +59,11 @@ public class OreReplacerUtil {
     }
     public static boolean isUndergroundBlock(Block block){
     	if(OreReplacerPlugin.REPLACING == true){
-        	if( block.getType().equals(Material.STONE) ||
-        		block.getType().equals(Material.DIRT) ||
+        	if( block.getType().equals(Material.STONE)  ||  
+    			block.getType().equals(Material.GRANITE)  ||  
+				block.getType().equals(Material.DIORITE)  ||  
+				block.getType().equals(Material.ANDESITE)  ||  
+    			block.getType().equals(Material.DIRT) ||
         		block.getType().equals(Material.GRAVEL) ){
         		return true;
         	}
@@ -310,9 +313,12 @@ public class OreReplacerUtil {
     	
     	for(int i=0;i<blockList.size();i++){
     		if(	blockList.get(i).getType().equals(Material.STONE)  ||  
+				blockList.get(i).getType().equals(Material.GRANITE)  ||  
+				blockList.get(i).getType().equals(Material.DIORITE)  ||  
+				blockList.get(i).getType().equals(Material.ANDESITE)  ||  
     			blockList.get(i).getType().equals(Material.GRAVEL)  ||  
     			blockList.get(i).getType().equals(Material.DIRT)  ||  
-    			blockList.get(i).getType().equals(Material.STATIONARY_LAVA)  ||
+    			blockList.get(i).getType().equals(Material.LAVA)  ||
     			blockList.get(i).getType().equals(Material.BEDROCK)    ||
     			blockList.get(i).getType().equals(Material.COAL_ORE)    ||
     			blockList.get(i).getType().equals(Material.IRON_ORE)    ||
