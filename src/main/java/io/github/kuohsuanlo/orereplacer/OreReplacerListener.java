@@ -32,20 +32,7 @@ import net.md_5.bungee.api.ChatColor;
 
 public class OreReplacerListener implements Listener {
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onBlockDamageEvent(BlockDamageEvent event) {
-		Block block = event.getBlock();
-			
-		if(!OreReplacerUtil.isOre(block)  &&  !OreReplacerUtil.isUndergroundBlock(block)) return;
-		if(!OreReplacerUtil.isValidWorld(block.getWorld())) {
-			return;
-		}
-				
-		if( OreReplacerUtil.isValidLocation(block.getLocation()) ){
-			OreReplacerUtil.hideOre(block,2);
-		}
-		
-	}
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onBlockPlaceEvent(BlockPlaceEvent event) {
 		Block block = event.getBlock();
@@ -86,7 +73,20 @@ public class OreReplacerListener implements Listener {
 		}
 		
     }
-    
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onBlockDamageEvent(BlockDamageEvent event) {
+		Block block = event.getBlock();
+			
+		if(!OreReplacerUtil.isOre(block)  &&  !OreReplacerUtil.isUndergroundBlock(block)) return;
+		if(!OreReplacerUtil.isValidWorld(block.getWorld())) {
+			return;
+		}
+				
+		if( OreReplacerUtil.isValidLocation(block.getLocation()) ){
+			OreReplacerUtil.hideOre(block,2);
+		}
+		
+	}
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onBlockBreakEvent(BlockBreakEvent event) {
 		Block block = event.getBlock();
@@ -123,7 +123,7 @@ public class OreReplacerListener implements Listener {
     		}
     		
     		OreReplacerUtil.hideOre(block,1);*/
-    		OreReplacerUtil.hideOre(block,2);
+    		OreReplacerUtil.hideOre(block,3);
     		
     		if(!OreReplacerUtil.isOre(block)  &&  !OreReplacerUtil.isUndergroundBlock(block)){
     			continue;
