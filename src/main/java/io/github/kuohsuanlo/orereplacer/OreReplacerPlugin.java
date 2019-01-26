@@ -60,6 +60,9 @@ public class OreReplacerPlugin extends JavaPlugin {
     public static boolean REPLACINGY_EMERALD = true;
     
     public static boolean REPLACING=true;
+
+    public static boolean ORE_PROTECTION_MODE=true;
+    public static String ORE_PROTECTION_TEXT= "Your placing behavior would make the ore disappear due to server anti-xray mechanism. Please remove the ore to place the block.";
     
     //TODO:
     public boolean TEAM_WORK=true;
@@ -161,6 +164,10 @@ public class OreReplacerPlugin extends JavaPlugin {
     	config.addDefault("REPLACING_LAPIS",true);
     	config.addDefault("REPLACING_REDSTONE",true);
     	
+
+    	config.addDefault("ORE_PROTECTION_MODE",ORE_PROTECTION_MODE);
+    	config.addDefault("ORE_PROTECTION_TEXT",ORE_PROTECTION_TEXT);
+    	
     	config.options().copyDefaults(true);
     	saveConfig();
     	
@@ -215,7 +222,9 @@ public class OreReplacerPlugin extends JavaPlugin {
      	REPLACING_REDSTONE = config.getBoolean("REPLACING_REDSTONE");
      	REPLACINGY_EMERALD = config.getBoolean("REPLACINGY_EMERALD");
      	    
-     	
+
+     	ORE_PROTECTION_MODE = config.getBoolean("ORE_PROTECTION_MODE");
+     	ORE_PROTECTION_TEXT = config.getString("ORE_PROTECTION_TEXT");
      	
      	PROBABILITY_DIAMOND = PROBABILITY_DIAMOND*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_DIAMOND+MIN_DIAMOND));
      	PROBABILITY_GOLD = PROBABILITY_GOLD*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_GOLD+MIN_GOLD));
@@ -225,7 +234,7 @@ public class OreReplacerPlugin extends JavaPlugin {
      	PROBABILITY_REDSTONE = PROBABILITY_REDSTONE*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_REDSTONE+MIN_REDSTONE));
      	PROBABILITY_EMERALD = PROBABILITY_EMERALD*PROBABILITY_INCREASING_CONSTANT*(2f/(MAX_EMERALD+MIN_REDSTONE));
      	
-     	
+
     }
 
 }

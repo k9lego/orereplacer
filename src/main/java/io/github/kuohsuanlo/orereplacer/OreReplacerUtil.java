@@ -7,11 +7,30 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 
 public class OreReplacerUtil {
 	public static Random rand = new Random();
 	public static int[] res = new int[6];
-
+	public static BlockFace[] checkedFaces = {BlockFace.DOWN,BlockFace.UP,BlockFace.EAST,BlockFace.WEST,BlockFace.NORTH,BlockFace.SOUTH};
+	public static Material[] UndergroudBlocks = {
+		Material.STONE,
+		Material.GRANITE,
+		Material.DIORITE,
+		Material.ANDESITE,
+		Material.GRAVEL,
+		Material.DIRT,
+		Material.CLAY,
+		Material.LAVA,
+		Material.BEDROCK,
+		Material.COAL_ORE,
+		Material.IRON_ORE,
+		Material.GOLD_ORE,
+		Material.DIAMOND_ORE,
+		Material.EMERALD_ORE,
+		Material.REDSTONE_ORE,
+		Material.LAPIS_ORE
+	};
 	public static int currentIdxDamage=0;
 	public static int currentIdx=0;
 	
@@ -24,6 +43,52 @@ public class OreReplacerUtil {
 	    return res;
 	}
 
+
+	public static boolean isPlacableLocation(Block block){
+
+		if(isUndergroundBlock(block)){
+			for(BlockFace face : checkedFaces){
+				Block candidate = block.getRelative(face);
+				
+				BlockFace originalFace = face.getOppositeFace();
+				
+				if(candidate!=null &&  isOre(candidate)){
+					int coveredBlockNumber = 0;
+					for(BlockFace facesOfAdj : checkedFaces){
+						if(facesOfAdj!=originalFace){
+							Block adjBlock = candidate.getRelative(facesOfAdj);
+							
+							if(adjBlock.getType().equals(Material.AIR)){
+								break;
+							}
+							
+							for(Material undergroud : UndergroudBlocks){
+								//System.out.println(adjBlock.getType().name()+"/"+facesOfAdj+"/"+adjBlock.getLocation().toString()+"/"+undergroud.name()+"/"+coveredBlockNumber);
+								if(adjBlock.getType().equals(undergroud)){
+									coveredBlockNumber++;
+									break;
+								}
+								
+							}
+							if(coveredBlockNumber==5){
+								return false;
+							}
+							
+						}
+					}
+				}
+			}
+			return true;
+		}
+		else{
+			return true;
+		}
+		
+		
+	}
+	
+	
+	
 	public static boolean isValidLocation(Location location){
 		if(location.getBlockY()>70) return false;
     	for(int i=0;i<OreReplacerPlugin.eventLocationListMining.size();i++){
@@ -58,13 +123,23 @@ public class OreReplacerUtil {
 		}
     }
     public static boolean isUndergroundBlock(Block block){
+    	for(Material undergroud : UndergroudBlocks){
+			if(block.getType().equals(undergroud)){
+				return true;
+			}
+    	}
+    	return false;
+    }
+    public static boolean isUndergroundNonOreBlock(Block block){
     	if(OreReplacerPlugin.REPLACING == true){
         	if( block.getType().equals(Material.STONE)  ||  
     			block.getType().equals(Material.GRANITE)  ||  
 				block.getType().equals(Material.DIORITE)  ||  
 				block.getType().equals(Material.ANDESITE)  ||  
     			block.getType().equals(Material.DIRT) ||
-        		block.getType().equals(Material.GRAVEL) ){
+        		block.getType().equals(Material.GRAVEL) ||
+        		block.getType().equals(Material.CLAY)||
+        		block.getType().equals(Material.LAVA) ){
         		return true;
         	}
     	}
@@ -174,7 +249,7 @@ public class OreReplacerUtil {
 			int[] randIdx = OreReplacerUtil.generateRandomPermutation();
 			for(int j=0;j<blockList.size();j++){
 	    		Block blockAdj = blockList.get(randIdx[j]);
-	    		if(isOre(blockAdj)  ||  isUndergroundBlock(blockAdj)  &&  isCoverByUndergoundBlock(blockAdj) ){  
+	    		if(isOre(blockAdj)  ||  isUndergroundNonOreBlock(blockAdj)  &&  isCoverByUndergoundBlock(blockAdj) ){  
 	    				blockAdj.setType(oriBlock.getType());
 		    			attemptAddingValidLocation(blockAdj.getLocation().add(1,0,0));
 		    			attemptAddingValidLocation(blockAdj.getLocation().add(-1,0,0));
@@ -237,7 +312,7 @@ public class OreReplacerUtil {
     	 * as soon as the first block is break.  (only if it's an ore block)
     	 */
     	for(int i=0;i<blockList.size();i++){
-    		if(isOre(blockList.get(i))  ||  isUndergroundBlock(blockList.get(i))){
+    		if(isOre(blockList.get(i))  ||  isUndergroundNonOreBlock(blockList.get(i))){
     			if( isCoverByUndergoundBlock(blockList.get(i)) ){  
     				
     				if(isValidLocation(blockList.get(i).getLocation())){
@@ -264,7 +339,7 @@ public class OreReplacerUtil {
     	 * as soon as the first block is break.  (only if it's an ore block)
     	 */
     	for(int i=0;i<blockList.size();i++){
-    		if(isOre(blockList.get(i))  ||  isUndergroundBlock(blockList.get(i))){
+    		if(isOre(blockList.get(i))  ||  isUndergroundNonOreBlock(blockList.get(i))){
     			if( isCoverByUndergoundBlock(blockList.get(i)) ){  
 	    		
 	    			boolean isReplacedByOre = false;
@@ -312,27 +387,13 @@ public class OreReplacerUtil {
     	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
     	
     	for(int i=0;i<blockList.size();i++){
-    		if(	blockList.get(i).getType().equals(Material.STONE)  ||  
-				blockList.get(i).getType().equals(Material.GRANITE)  ||  
-				blockList.get(i).getType().equals(Material.DIORITE)  ||  
-				blockList.get(i).getType().equals(Material.ANDESITE)  ||  
-    			blockList.get(i).getType().equals(Material.GRAVEL)  ||  
-    			blockList.get(i).getType().equals(Material.DIRT)  ||  
-    			blockList.get(i).getType().equals(Material.LAVA)  ||
-    			blockList.get(i).getType().equals(Material.BEDROCK)    ||
-    			blockList.get(i).getType().equals(Material.COAL_ORE)    ||
-    			blockList.get(i).getType().equals(Material.IRON_ORE)    ||
-    			blockList.get(i).getType().equals(Material.GOLD_ORE)    ||
-    			blockList.get(i).getType().equals(Material.DIAMOND_ORE)    ||
-    			blockList.get(i).getType().equals(Material.EMERALD_ORE)    ||
-    			blockList.get(i).getType().equals(Material.REDSTONE_ORE)    ||
-    			blockList.get(i).getType().equals(Material.LAPIS_ORE)    ||
-    			blockList.get(i).getType().equals(Material.CLAY)       
-    			){
-    			
-    		}
-    		else{
-    			return false;
+    		for(Material undergroud : UndergroudBlocks){
+    			if(blockList.get(i).getType().equals(undergroud)){
+    				
+    			}
+    			else{
+    				return false;
+    			}
     		}
     	}
     	
