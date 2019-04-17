@@ -96,13 +96,18 @@ public class OreReplacerListener implements Listener {
     public void onBlockDamageEvent(BlockDamageEvent event) {
 		Block block = event.getBlock();
 			
-		if(!OreReplacerUtil.isOre(block)  &&  !OreReplacerUtil.isUndergroundNonOreBlock(block)) return;
+		if(!OreReplacerUtil.isOre(block)  &&  !OreReplacerUtil.isUndergroundNonOreBlock(block)){
+			return;
+		}
 		if(!OreReplacerUtil.isValidWorld(block.getWorld())) {
 			return;
 		}
 				
-		if( OreReplacerUtil.isValidLocation(block.getLocation()) ){
-			OreReplacerUtil.hideOre(block,2);
+		if( OreReplacerUtil.isBearOre(block)){
+			OreReplacerUtil.handleBearOre(block,block.getType(),OreReplacerUtil.getOreNumber(block.getType()));
+		}
+		else if( OreReplacerUtil.isValidLocation(block.getLocation()) ){
+			OreReplacerUtil.hideOre(block,3);
 		}
 		
 	}
@@ -115,7 +120,10 @@ public class OreReplacerListener implements Listener {
 			return;
 		}
 		
-		if( OreReplacerUtil.attemptAddingValidLocation(block.getLocation()) ){
+		if( OreReplacerUtil.isBearOre(block)){
+			OreReplacerUtil.handleBearOre(block,block.getType(),OreReplacerUtil.getOreNumber(block.getType()));
+		}
+		else if( OreReplacerUtil.attemptAddingValidLocation(block.getLocation()) ){
 			OreReplacerUtil.replaceFirstOre(block);
 		}
     }

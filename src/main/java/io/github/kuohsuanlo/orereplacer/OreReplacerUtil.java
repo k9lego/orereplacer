@@ -87,7 +87,43 @@ public class OreReplacerUtil {
 		
 	}
 	
+
+	public static boolean isBearOre(Block block){
+		if(isOre(block)  &&  isValidLocation(block.getLocation())){
+			
+			boolean isCurrentBearOre = false;
+			for(BlockFace face : checkedFaces){
+				Block candidate = block.getRelative(face);
+				
+				if(candidate!=null &&  candidate.getType().equals(Material.AIR)){
+					isCurrentBearOre = true;
+				}
+				
+			}
+			if(isCurrentBearOre){
+				return true;
+			}
+		}
+		return false;
+		
+    }
 	
+	public static void handleBearOre(Block block,Material oreType,int remainedLength){
+	
+		if(remainedLength<=0) return;
+		
+		for(BlockFace face : checkedFaces){
+			Block candidate = block.getRelative(face);
+			
+			
+			if(isValidLocation(block.getLocation())  &&  candidate!=null &&  candidate.getType().equals(oreType)){
+				//System.out.println(oreType.name()+" : remainedLength : "+remainedLength);
+				attemptAddingValidLocation(block.getLocation());
+				handleBearOre(candidate,oreType,remainedLength-1);
+			}
+		}
+			
+	}
 	
 	public static boolean isValidLocation(Location location){
 		if(location.getBlockY()>70) return false;
@@ -268,49 +304,31 @@ public class OreReplacerUtil {
 	}
 	
 	
-	public static void hideAll(Block block,int radius){
-    	int x = block.getLocation().getBlockX();
-    	int y = block.getLocation().getBlockY();
-    	int z = block.getLocation().getBlockZ();
-    	for(int dx=-radius;dx<=radius;dx++){
-    		for(int dy=-radius;dy<=radius;dy++){
-    			for(int dz=-radius;dz<=radius;dz++){
-					
-    				Block tmpBlock = block.getWorld().getBlockAt(x+dx, y+dy, z+dz);
-    				
-					if(OreReplacerUtil.isOre(tmpBlock)){
-						block.setType(Material.STONE);
-						
-					} 
-            	}
-        		
-        	}
-    		
-    	}    	
-    	
-    }
-	
 	
 	public static void hideOre(Block block,int radius){
     	double x = block.getLocation().getBlockX();
     	double y = block.getLocation().getBlockY();
     	double z = block.getLocation().getBlockZ();
     	ArrayList<Block> blockList = new ArrayList<Block>();
+
+    	for(int dx=-1;dx<=1;dx++){
+    		for(int dy=-1;dy<=1;dy++){
+    			for(int dz=-1;dz<=1;dz++){
+    				blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+dx,y+dy,z+dz)));
+    	    	}
+    		}
+    	}
     	for(int dx=-radius;dx<=radius;dx++){
-    		for(int dy=-radius;dy<=radius;dy++){
-    			for(int dz=-radius;dz<=radius;dz++){
-					blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+dx,y+dy,z+dz)));
-    				
-    				
-            	}
-        		
-        	}
-    		
-    	}    	
-    	/*
-    	 * All six nearby blocks should be marked as dirty. Otherwise the remaining ores would be removed,
-    	 * as soon as the first block is break.  (only if it's an ore block)
-    	 */
+    		blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x+dx,y,z)));
+    	}
+		for(int dy=-radius;dy<=radius;dy++){
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y+dy,z)));
+		}
+		for(int dz=-radius;dz<=radius;dz++){
+			blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+dz)));
+    	}
+		
+		
     	for(int i=0;i<blockList.size();i++){
     		if(isOre(blockList.get(i))  ||  isUndergroundNonOreBlock(blockList.get(i))){
     			if( isCoverByUndergoundBlock(blockList.get(i)) ){  
@@ -386,14 +404,10 @@ public class OreReplacerUtil {
     	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z+1)));
     	blockList.add(block.getWorld().getBlockAt(new Location(block.getWorld(),x,y,z-1)));
     	
+    	
     	for(int i=0;i<blockList.size();i++){
-    		for(Material undergroud : UndergroudBlocks){
-    			if(blockList.get(i).getType().equals(undergroud)){
-    				
-    			}
-    			else{
-    				return false;
-    			}
+    		if(!isUndergroundBlock(blockList.get(i))){
+    			return false;
     		}
     	}
     	
