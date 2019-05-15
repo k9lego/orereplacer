@@ -125,6 +125,20 @@ public class OreReplacerUtil {
 			
 	}
 	
+	// Fixs cave clusters being broken.
+	public static boolean isAdjacentToBearOre(Block block, Material oreType)
+	{
+		if (block.adjBlock.isCurrentBearOre.equals(true))
+		{
+			return true;
+		}
+		else
+		{
+			return false;	
+		}
+	}
+	
+	
 	public static boolean isValidLocation(Location location){
 		if(location.getBlockY()>70) return false;
     	for(int i=0;i<OreReplacerPlugin.eventLocationListMining.size();i++){
